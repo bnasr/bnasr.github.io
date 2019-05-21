@@ -1,7 +1,7 @@
 ---
 title: "Extracting Timeseries from Images using the xROI R Package"
 description: "Delineate Region of Interests (ROIs) and Extract Time-Series Data from Digital Repeat Photography Images using xROI"
-date: "2019-05-20"
+date: "2019-05-21"
 authors: Bijan Seyednasrollah
 estimatedTime: 0.5 hrs
 ---
@@ -104,8 +104,8 @@ Rscript -e “xROI::Launch(Interactive = TRUE)”
 When you are done with the xROI interface you can close the tab in your browser 
 and end the session in R by using one of the following options
 
-**In RStudio:** Press the <Esc> key on your keyboard.
-**In R Terminal:** Press <Ctrl + C> on your keyboard.
+**In RStudio:** Press the _Esc_ key on your keyboard.
+**In R Terminal:** Press _Ctrl + C_ on your keyboard.
 
 ## Use xROI 
 

@@ -3,6 +3,7 @@
 ## utils::install.packages('xROI', repos = "http://cran.us.r-project.org" )
 ## 
 
+
 ## ----install-GitHub, echo=TRUE, eval=FALSE-------------------------------
 ## 
 ## # install devtools first
@@ -12,6 +13,7 @@
 ## devtools::install_github("bnasr/xROI")
 ## 
 
+
 ## ----launch-r, echo=TRUE, eval=FALSE-------------------------------------
 ## # load xROI
 ## library(xROI)
@@ -20,7 +22,9 @@
 ## Launch()
 ## 
 
+
 ## 
+
 ## ----launch-xroi, echo=TRUE, eval=FALSE----------------------------------
 ## 
 ## # launch data in ROI

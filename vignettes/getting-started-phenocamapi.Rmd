@@ -39,7 +39,7 @@ directly from the server:
 
 ## Codes
 
-The codes for this tutorial are availble for download from [here](codes/getting-started-phenocamapi.R).
+The codes for this tutorial are availble for download from [here](getting-started-phenocamapi.R).
 
 
 ## Exploring PhenoCam metadata
