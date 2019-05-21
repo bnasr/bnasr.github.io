@@ -4,12 +4,14 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+
 ## ----libraries-----------------------------------------------------------
 
 library(data.table)
 library(phenocamapi)
 library(lubridate)
 library(jpeg)
+
 
 
 ## ----obtain-data, fig.height=5, fig.width=8, message=FALSE---------------
@@ -22,6 +24,7 @@ head(phenos$site)
 
 # checking out the columns
 colnames(phenos)
+
 
 ## ----plot-MAT-MAP, message=FALSE, fig.height=8, fig.width=8--------------
 # removing the sites with unkown MAT and MAP values
@@ -41,6 +44,7 @@ legend('topleft', legend = c('DB','DN', 'EN','EB','AG', 'SH'),
        col =  c('green', 'darkgreen', 'brown',  'orange',  'yellow',  'red' ))
 
 
+
 ## ----filter-flux, fig.height=5, fig.width=6.5, message=FALSE-------------
 # store sites with flux_data available and the FLUX site name is specified
 phenofluxsites <- phenos[flux_data==TRUE&!is.na(flux_sitenames)&flux_sitenames!='', 
@@ -53,6 +57,7 @@ phenofluxsites <- phenofluxsites[Flux!='']
 head(phenofluxsites)
 
 
+
 ## ----filter-flux-db, fig.height=5, fig.width=6.5, message=FALSE----------
 
 #list deciduous broadleaf sites with flux tower
@@ -61,6 +66,7 @@ DB.flux <- phenos[flux_data==TRUE&primary_veg_type=='DB',
 
 # see the first few rows
 head(DB.flux)
+
 
 ## ----get-rois, fig.height=5, fig.width=6.5, message=FALSE----------------
 # obtaining the list of all the available ROI's on the PhenoCam server
@@ -71,6 +77,7 @@ colnames(rois)
 
 # view first few locations
 head(rois$roi_name)
+
 
 
 ## ---- fig.height=5, fig.width=6.5, message=FALSE-------------------------
@@ -84,6 +91,7 @@ dukehw_DB_1000 <- get_pheno_ts(site = 'dukehw', vegType = 'DB', roiID = 1000, ty
 str(dukehw_DB_1000)
 
 
+
 ## ----plot-gcc90, fig.height=5, fig.width=8-------------------------------
 # date variable into date format
 dukehw_DB_1000[,date:=as.Date(date)]
@@ -93,6 +101,7 @@ dukehw_DB_1000[,plot(date, gcc_90, col = 'green', type = 'b')]
 mtext('Duke Forest, Hardwood', font = 2)
 
 
+
 ## ----midday-list, fig.height=5, fig.width=8, message=FALSE---------------
 
 # obtaining midday_images for dukehw
@@ -100,6 +109,7 @@ duke_middays <- get_midday_list('dukehw')
 
 # see the first few rows
 head(duke_middays)
+
 
 
 ## ----midday-download, fig.height=5, fig.width=8--------------------------
@@ -118,6 +128,7 @@ if(class(img)!='try-error'){
   rasterImage(img, 0, 0, 1, 1)
 }
 
+
 ## ----midday-time-range, fig.height=6, fig.width=8, message=FALSE, eval=TRUE----
 
 # open a temporary directory
@@ -134,6 +145,7 @@ download_midday_images(site = 'dukehw', # which site
 duke_middays_path <- dir(tmp_dir, pattern = 'dukehw*', full.names = TRUE)
 
 head(duke_middays_path)
+
 
 
 ## ----plot-monthly-forest, fig.height=6, fig.width=8, message=FALSE, eval=TRUE----
