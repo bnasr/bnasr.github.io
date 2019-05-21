@@ -105,8 +105,8 @@ Rscript -e “xROI::Launch(Interactive = TRUE)”
 When you are done with the xROI interface you can close the tab in your browser 
 and end the session in R by using one of the following options
 
-**In RStudio:** Press the <Esc> key on your keyboard.
-**In R Terminal:** Press <Ctrl + C> on your keyboard.
+**In RStudio:** Press the _Esc_ key on your keyboard.
+**In R Terminal:** Press _Ctrl + C_ on your keyboard.
 
 ## Use xROI 
 
