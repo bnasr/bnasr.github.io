@@ -162,7 +162,7 @@ $(document).ready(function () {
 <h2>Data Wrangling</h2>
 <p>Data wrangling steps include</p>
 <div id="load-required-r-packages" class="section level5">
-<h5>1) Load required R packages</h5>
+<h5><strong>1) Load required R packages</strong></h5>
 <pre class="r"><code># load main R libraries, should be installed first
 
 # install load phenocamapi
@@ -208,14 +208,14 @@ if (!require(fields, quietly = T, warn.conflicts = F)) {
 ##  a vignette and other supplements.</code></pre>
 </div>
 <div id="load-pigments-data-from-the-raw-format" class="section level5">
-<h5>2) Load pigments data from the raw format</h5>
+<h5><strong>2) Load pigments data from the raw format</strong></h5>
 <pre class="r"><code>#load pigments
 pigments &lt;- read.csv('data/pigment_data/raw/Sheet3_Niwot Pigments Modified for GCC comparison 5.30.19.csv', 
                      skip = 2, 
                      colClasses = 'character')</code></pre>
 </div>
 <div id="organize-the-raw-dataset-as-a-clean-data-frame" class="section level5">
-<h5>3) Organize the raw dataset as a clean data frame</h5>
+<h5><strong>3) Organize the raw dataset as a clean data frame</strong></h5>
 <p>The raw pigment data should be organized and cleaned in order to be used in the next steps.</p>
 <pre class="r"><code># select main columns from the raw data and convert to a data.table
 pigmentsDT &lt;- as.data.table(pigments[!pigments$Sample.ID%in%c('', ' '),
@@ -275,7 +275,7 @@ pigmentsDT[grepl(pattern = '^0', SampleID),
 # str(pigmentsDT)</code></pre>
 </div>
 <div id="obtain-the-phenocam-time-series" class="section level5">
-<h5>4) Obtain the PhenoCam Time-series</h5>
+<h5><strong>4) Obtain the PhenoCam Time-series</strong></h5>
 <p>PhenoCam 1-day and 3-day time-series are obtained directly from the server and the get combined into a single data.frame.</p>
 <pre class="r"><code># load gcc
 gcc &lt;- rbind(
@@ -308,8 +308,9 @@ gcc [,date:=as.Date(date)]
 
 # display the internal structure of the gcc data
 # str(gcc)</code></pre>
-<div id="combine-pigment-and-phenocam-data" class="section level6">
-<h6>5) Combine Pigment and PhenoCam data</h6>
+</div>
+<div id="combine-pigment-and-phenocam-data" class="section level5">
+<h5><strong>5) Combine Pigment and PhenoCam data</strong></h5>
 <p>In this step, we extract GCC and RCC value for the sample dates at which the pigment data were collected and then we add those as new columns to the pigment data. Finally, we write the final dataset in a CSV-formatted file.</p>
 <pre class="r"><code># add empty columns for GCC and RCC 
 pigmentsDT$gcc90_1day &lt;- NA
@@ -344,9 +345,8 @@ for(i in 1:nrow(pigmentsDT)){
 # output the pigment data
 write.csv(pigmentsDT, file = 'data/pigment_data/pigmentsDT.csv', row.names = F)</code></pre>
 </div>
-</div>
 <div id="creating-the-daily-averaged-dataset" class="section level5">
-<h5>6) Creating the daily averaged dataset</h5>
+<h5><strong>6) Creating the daily averaged dataset</strong></h5>
 <p>Since there are multiple replicates for pigment data, we averaged over the pigment data in order to have a single value for each date/tree. Note that this is only done for samples collected under the light condition and only for the P2, P9 and S3 trees.</p>
 <pre class="r"><code># caclulate the mean values as they are grouped for each tree and reorder by date.
 pigments_mean &lt;- pigmentsDT[Treatment=='L'&amp;Tree.ID%in%c('P2', 'P9', 'S3'),.(Gcc1 = mean(gcc90_1day, na.rm = T), 
@@ -367,14 +367,14 @@ pigments_mean &lt;- pigmentsDT[Treatment=='L'&amp;Tree.ID%in%c('P2', 'P9', 'S3')
 write.csv(pigments_mean, file = 'data/pigment_data/pigments_mean.csv', row.names = F)</code></pre>
 </div>
 <div id="calculate-grvi" class="section level5">
-<h5>7) Calculate GRVI</h5>
+<h5><strong>7) Calculate GRVI</strong></h5>
 <p>GRVI is calculated from RCC and GCC of the PhenoCam 1-day data</p>
 <pre class="r"><code># calcualte the GRVI
 pigments_mean[, GCC:=scale(Gcc1), Tree.ID]
 pigments_mean[, RCC:=scale(Rcc1), Tree.ID]
 pigments_mean[, GRVI:=(Gcc1-Rcc1)/(Gcc1+Rcc1), ]
 pigments_mean[, GRVI3:=(Gcc3-Rcc3)/(Gcc3+Rcc3), ]</code></pre>
-<p>At this point, we have created a cleaned daily averaged per tree dataset that contain both main pigment elements and PhenoCam data. GRVI</p>
+<p>At this point, we have created a cleaned daily averaged per tree dataset that contains both main pigment elements and PhenoCam data. GRVI</p>
 </div>
 </div>
 <div id="results" class="section level2">
@@ -393,7 +393,7 @@ pigments_mean[Tree.ID=='P2',plot(date, GCC,
                                  type = 'b', 
                                  col = cols[1], 
                                  bty = 'n', 
-                                 ylab ='GCC')]</code></pre>
+                                 ylab ='GCC')];</code></pre>
 <pre><code>## NULL</code></pre>
 <pre class="r"><code>pigments_mean[Tree.ID=='P9',lines(date, GCC, 
                                   type = 'b', 
