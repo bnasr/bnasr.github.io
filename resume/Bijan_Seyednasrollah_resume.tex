@@ -1,0 +1,334 @@
+\documentclass[10pt]{article}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{etaremune}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{helvet}
+
+\leftmargin=0.25in
+\oddsidemargin=0.25in
+\textwidth=6.0in
+\topmargin=-0.25in
+\textheight=9.25in
+
+\raggedright
+
+%\pagenumbering{arabic}
+
+%following lines ared added by bijan
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \renewcommand{\headrulewidth}{0pt}
+% \lfoot{Bijan Seyednasrollah's CV }
+% \rfoot{\thepage}
+
+
+\def\bull{\vrule height 0.8ex width .7ex depth -.1ex }
+% DEFINITIONS FOR RESUME
+
+\newenvironment{changemargin}[2]{%
+  \begin{list}{}{%
+ \setlength{\topsep}{0pt}%
+ \setlength{\leftmargin}{#1}%
+ \setlength{\rightmargin}{#2}%
+ \setlength{\listparindent}{\parindent}%
+ \setlength{\itemindent}{\parindent}%
+ \setlength{\parsep}{\parskip}%
+  }%
+  \item[]}{\end{list}
+}
+
+\newcommand{\lineover}{
+  \begin{changemargin}{-0.05in}{-0.05in}
+  \vspace*{-8pt}
+  \hrulefill \\
+  \vspace*{-2pt}
+  \end{changemargin}
+}
+
+\newcommand{\header}[1]{
+  \begin{changemargin}{-0.5in}{-0.5in}
+  \scshape{#1}\\
+  \lineover
+  \end{changemargin}
+}
+
+
+\newcommand{\contact}[7]{
+  \begin{changemargin}{-0.5in}{-0.5in}
+  \begin{flushleft}
+  
+  {\huge \scshape {#1}}\\ 
+  
+  \smallskip
+  \url{#2} \hfill{#5}\\
+  {#3} \hfill{#6}\\
+  GitHub: @{#4} \hfill{#7}\\
+  
+  \end{flushleft}
+  \end{changemargin}
+}
+
+\newenvironment{body} {
+  \vspace*{-2pt}
+  \begin{changemargin}{-0.5in}{-0.5in}
+}
+{\end{changemargin}
+}
+
+\newcommand{\school}[4]{
+  \textbf{#1} \hfill \emph{#2\\}
+  #3\\
+  #4\\
+}
+
+% \usepackage[english]{babel}
+% \usepackage[utf8]{inputenc}
+% \usepackage{fancyhdr}
+
+%\lfoot{Bijan Seyednasrollah's CV}
+% end RESUME DEFINITIONS
+
+\usepackage{fancyhdr}
+\renewcommand{\headrulewidth}{0.0pt}% To remove the rule on the top of the page
+\pagestyle{fancy}
+\fancyhf{} % clear all fields
+\lfoot{\smallskip Bijan Seyednasrollah's Resume}\rfoot{\smallskip \thepage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Name
+\contact{Bijan Seyednasrollah}
+{https://bnasr.github.io}
+{bijan.s.nasr@gmail.com}
+{bnasr}
+{(919) 599-4380}
+{PO Box 5693}
+{Flagstaff, AZ 86011}
+
+\smallskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Highlights}
+\begin{body}
+	\vspace*{4pt}
+	\begin{itemize} \itemsep -2pt  % reduce space between items
+    \item[*]Daily work with big data including NEON phenocam data (1 million new images per month)
+    \item[*]Strong quantitative, ecological and data science background
+    \item[*]Developer of several web-based applications (on Shiny)
+    \item[*]Developer of several R-packages (more than 12k downloads)
+    \item[*]Proficient programmer in multiple platforms and languages
+    \item[*]Organized and taught scientific workshops for diverse audience
+    \item[*]Developments of contents and tutorials for public users (collaborated with NEON educators)
+	\end{itemize} 
+\end{body}
+\smallskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Education
+\header{Education}
+
+\begin{body}
+  \textbf{Ph.D. in Quantitative Environmental Science}, Duke University, Durham, NC\hfill {2017} \\
+  \smallskip
+
+  \textbf{M.Sc. in Mechanical Engineering, Energy Conversion}, Sharif University of Technology, Tehran, Iran \hfill {2006} \\
+  \smallskip
+
+  \textbf{B.Sc. in Mechanical Engineering, Heat and Fluid Flow}, University of Semnan, Semnan, Iran\hfill {2003} \\
+
+\end{body}
+
+\smallskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Academic appointments
+\header{Professional Experience}
+
+\begin{body}
+
+  \textbf{PhenoCam-NEON Data Scientist}, \emph{PhenoCam Network, Harvard Univ. / Northern Arizona Univ.} \hfill {2017 - present}\\
+	\vspace*{-4pt}
+	\begin{itemize} \itemsep -0pt  % reduce space between items
+  	  \item[-] Leading data curation of PhenoCam Dataset including NEON phenocams, a total of 1800 site-years
+  	  \item[-] Developed Shiny apps for interactive data processing and quality control
+  	  \item[-] Developed R packages including xROI, phenocamapi, hazer to facilitate data processing
+  	  \item[-] Organized several workshops on phenocam data processing (e.g., NEON-PhenoCam Workshop at AGU)
+	\end{itemize}
+  \smallskip
+
+	\textbf{Doctoral Research Assistant}, \emph{Nicholas School of the Environment, Duke University} \hfill {2011 - 2017}\\
+	\vspace*{-4pt}
+	\begin{itemize} \itemsep -0pt  % reduce space between items
+	  \item[-] Designed a hierarchical state-space model to study green-up phenology from MODIS reflectance data
+		\item[-] Extracted and analyzed the continental-scale land surface temperature data from MODIS to monitor drought
+		\item[-] Developed the Forest Radiation Model (FoRM) to estimate energy fluxes in snow-covered watersheds
+		\item[-] Developed the Gap Radiation Model (GaRM) to quantify the radiative energy in forest gaps
+	\end{itemize}
+  \smallskip
+
+	\textbf {Research and Development Engineer}, \emph{Research Institute of Petroleum Industry, Iran} \hfill {2006 - 2011}\\
+	\vspace*{-4pt}
+	\begin{itemize} \itemsep -0pt
+		\item[-] Developed a 3D simulator of multiphase flow in porous media in C/C++ to model oil reservoir
+		\item[-] Co-Developed the Energy Performance and Assessment Tools in C\# for energy management in power plants
+		\item[-] Co-Developed the Pars Basin Modeler (PBM) in C/C++/Fortran to model sedimentary basins
+	\end{itemize}
+	
+		
+\end{body}
+\smallskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\header{Skills}
+
+\begin{body}
+  \textbf{Programming and Scripting:} \\
+  \vspace*{-4pt}
+  \begin{itemize} \itemsep -0pt
+    \item[-] C/C++/C\#, R, Python, Markdown, MATLAB, Mathematica, Java, VBA, Fortran, Pascal, Shell, HTML/CSS,\\
+    \item[-] Object Oriented Programming (OOP), High Performance Computing (HPC), Multithreaded Programming\\
+  \end{itemize}
+
+  \textbf{Quantitative, Geospatial and Visualizations:} \\
+  \vspace*{-4pt}
+  \begin{itemize} \itemsep -0pt
+    \item[-] Hierarchical Modeling, Bayesian Statistics, Markov Chain Monte Carlo (MCMC), Machine Learning, \\
+    \item[-] GIS, Geospatial Analysis, Remote Sensing, Data Elevation Model (DEM) Processing, Image Processing, \\
+  \end{itemize}
+
+\end{body}
+\smallskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Selected Media Coverage}
+
+\begin{body}
+
+  \textbf{LTER Network Science Update}: Keeping an eye out for drought \hfill{May 29, 2019}\\
+  \smallskip
+
+  \textbf{NAU News}: ‘Maybe I could just do this:’ NAU Researcher Develop Real-time Drought Monitoring Tool \hfill{April 2, 2019}\\
+  \smallskip
+
+  \textbf{Weather Nation}: A Faster and More Accurate Way to Monitor Drought \hfill{March 13, 2019}\\
+  \smallskip
+
+  \textbf{Futurity}: Free ‘Drought Eye’ Maps Ecpicts Thermal Stress \hfill{March 5, 2019}\\
+  \smallskip
+
+  \textbf{Science Daily}: Thermal Stress Measurements Sound the Alarm About Drought Conditions Sooner \hfill{March 4, 2019}\\
+
+\end{body}
+
+\smallskip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Selected Peer-reviewed Datasets and Open-source Software Applications}
+
+\begin{body}
+
+\textbf{B. Seyednasrollah}, et al. (2019) ``PhenoCam Dataset v2.0: Vegetation Phenology from Digital Camera Imagery, 2000-2018''.  ORNL Distributed Active Archive Center https://doi.org/10.3334/ORNLDAAC/1674. \\
+    \smallskip
+
+\textbf{B. Seyednasrollah}, T. Milliman and A. D. Richardson (2018),  ``xROI: A Toolkit to Extract Time-series Data from Digital Repeat Photography Images''. Zenodo. http://doi.org/10.5281/zenodo.1202273\\
+    \smallskip
+
+\textbf{B. Seyednasrollah}, J. J. Swenson, J. C. Domec, J. S. Clark (2018),  ``phenoCDM: Continuous Development Models for Incremental Time-Series Analysis''. Zenodo. http://doi.org/10.5281/zenodo.1204614\\
+    \smallskip
+
+\textbf{B. Seyednasrollah}, ``hazer: Quantifying haze factor for RGB images to identify cloudy and foggy weather'', Zenodo. http://doi.org/10.5281/zenodo.1008568, 2017. \\ 
+\smallskip
+
+\textbf{B. Seyednasrollah}, ``solrad: To calculate solar radiation and related variables based on location, time and topographical conditions'', Zenodo. http://doi.org/10.5281/zenodo.1249673, 2016. \\
+
+\end{body}
+
+\smallskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Selected Funding and Fellowships}
+
+\begin{body}
+  \textbf{NEON-ESA Early Career Scholars}, National Ecological Observatory Network \hfill {2019}\\
+  \smallskip
+
+  \textbf{NEON Data Institute Fellowship}, National Ecological Observatory Network  \hfill {2018}\\
+  \smallskip
+
+  \textbf{Outstanding Accomplishments Fellowship}, The Duke University Graduate School, \$22,470 \hfill {2016 - 2017}\\
+  \smallskip
+
+
+  \textbf{Bass Online Apprentice Fellowship}, Duke University, \$11,235 \hfill {2016}\\
+  \smallskip
+
+  \textbf{Bass Instructional Teaching Assistant Fellowship}, Duke University, \$11,235 \hfill {2015}\\
+  \smallskip
+
+  \textbf{Pathfinder Fellowship}, The Consortium for the Advancement of Hydrologic Science Inc. (CUAHSI), \$4,996  \hfill {2014}\\
+
+\end{body}
+\smallskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Selected Peer-reviewed Journal Publications}
+
+\begin{body}
+
+ \textbf{B. Seyednasrollah}, A. M. Young, K. Hufkens, T. Milliman, M. A. Friedl, S. Frolking, A. D. Richardson, ``Tracking vegetation phenology across diverse biomes using PhenoCam imagery: The PhenoCam Dataset v2.0'', Scientific Data, in review.\\
+    \smallskip
+
+\textbf{B. Seyednasrollah}, A. D. Richardson, T. Milliman, ``Data extraction from digital repeat photography using xROI: An interactive framework to facilitate the process'', ISPRS Journal of Photogrammetry and Remote Sensing, Volume 152, June 2019, Pages 132-144, doi:10.1016/j.isprsjprs.2019.04.009.\\
+    \smallskip
+
+
+\textbf{B. Seyednasrollah}, J. C. Domec, J. S. Clark (2019) ``Spatiotemporal sensitivity of thermal stress for monitoring canopy hydrological stress in near real-time'', Agricultural and Forest Meteorology, Volumes 269–270, 15 May 2019, Pages 220-230, doi:10.1016/j.agrformet.2019.02.016.\\
+    \smallskip
+
+A. D. Richardson, K. Hufkens, T. Milliman, D. M. Aubrecht, M. E. Furze, \textbf{B. Seyednasrollah}, M. B. Krassovski, J. M. Latimer, W. R. Nettles, R. R. Heiderman, J. M. Warren, and P. J. Hanson (2018) ``Ecosystem warming extends vegetation activity but heightens cold temperature vulnerability'', Nature, Volume 560, pages368–371 (2018), doi:10.1038/s41586-018-0399-1.\\
+    \smallskip
+
+\textbf{B. Seyednasrollah}, J. J. Swenson, J. C. Domec, J. S. Clark (2018) ``Leaf phenology paradox: why warming matters most where it is already warm'', Remote Sensing of Environment, Volume 209, May 2018, Pages 446-455, ISSN 0034-4257, doi:10.1016/j.rse.2018.02.059.\\
+
+\end{body}
+
+\smallskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\header{Selected Invited Talks}
+
+\begin{body}
+
+\textbf{B. Seyednasrollah (invited)}, A. D. Richardson, ``PhenoCam data and validation of remotely sensed vegetation indices'', NASA CEOS LPV Workshop 2018, Washington DC. \\
+    \smallskip
+
+\textbf{B. Seyednasrollah (invited)}, K. Duffy, A. M. Young, A. D. Richardson, ``Flux-PhenoCam Data Fusion to Understand Surface Energy Balance'', NEON Surface Atmosphere Exchange Workshop 2018, Washington DC. \\
+    \smallskip
+
+\textbf{B. Seyednasrollah (invited)}, A. Young, K. Duffy, T. Milliman, A. D. Richardson, ``Phenocams: Tracking vegetation activity from digital cameras'', NEON Data Institute 2018, National Ecological Observatory Network, Boulder, CO.\\
+    \smallskip
+
+\textbf{B. Seyednasrollah (invited)}, J. Clark, ``Understanding Phenology across Scales and Improving Linkages to Ecosystem Functions'', American Geophysical Union Fall Meeting 2015, San Francisco, CA.\\
+    \smallskip
+
+\textbf{B. Seyednasrollah (invited)}, Andrew Latimer, Leah Johnson, Janneke Hille Ris Lambers, … ``Applications of Joint Species Distribution Modeling with Case Studies'', The Statistical and Applied Mathematical Sciences Institute (SAMSI), ECOL: Transition Workshop 2015, Durham, NC.\\
+    \smallskip
+
+\textbf{B. Seyednasrollah (invited)}, Andrew Latimer, Ian Breckheimer, Janneke Hille Ris Lambers, ``Applications of Joint Species Distribution Modeling with Case Studies'', The Statistical and Applied Mathematical Sciences Institute (SAMSI), ECOL: Multivariate Models in Ecology 2015, Durham, NC.\\
+
+\end{body}
+
+
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
