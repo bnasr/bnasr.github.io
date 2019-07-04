@@ -1,7 +1,33 @@
+---
+title: "Animate Duke Forest"
+author: "Bijan Seyednasrollah"
+date: "06/30/2019"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Animate Duke Forest Phenology
+
+This is a simple tutorial to show how to make a simple time-lapse animation using PhenoCam images from a single site. We use [Duke Forest](https://phenocam.sr.unh.edu/webcam/sites/dukehw/).
+
+
+#### First load the required R packages
+```{r req, eval=FALSE}
 library(animation)
 library(phenocamapi)
 library(lubridate)
 library(jpeg)
+```
+
+#### Pick a site, an ROI and a year
+
+We pick [dukehw_DB_1000](https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html) and we would like to animate only year 2017 from this time-series.
+
+```{r roi, eval=FALSE}
 
 # assuming we want to make an animation from the given time-series
 # https://phenocam.sr.unh.edu/data/archive/dukehw/ROI/dukehw_DB_1000.html
@@ -10,11 +36,18 @@ site <-'dukehw' # phenocam site name
 Years <- 2017 # vector of years to make the animation
 vegType <- 'DB' # vegetation type DB = deciduous broadloeaf
 roiID <- 1000  # ROI ID 
+```
 
-
+Then we create an empty directory same as the site name to later download the images into this directory.
+ 
+```{r dir, eval=FALSE}
 #create a new folder to download the midday images
 dir.create(site, showWarnings = FALSE)
+```
 
+
+#### Obtain the timeseries
+```{r ts, eval=FALSE}
 
 #getting the timeseries from the phenocam server
 gcc_ts <- get_pheno_ts(site, 
@@ -39,7 +72,11 @@ gcc_file_tbl <- na.omit(gcc_file_tbl) # removing the NA values
 
 
 gcc_file_tbl <- gcc_file_tbl[month(YYYYMMDD)==5]
+```
 
+
+#### Download all the selected midday images
+```{r download, eval=FALSE}
 
 #downloading midday files
 mapply(
@@ -52,11 +89,11 @@ mapply(
     try(download.file(x, dest))
   },
   gcc_file_tbl$midday_url)
+```
 
 
-# dummy
-gcc_file_tbl[,gcc:=gcc_90]
-
+#### Making the video
+```{r anim, eval=FALSE}
 
 # a simple function to plot midday image given an index and corresponding gcc timeseries upto that date
 show_midday <- function(i){
@@ -66,7 +103,7 @@ show_midday <- function(i){
   
   img <- readJPEG(gcc_file_tbl$midday_dest[i])
   rasterImage(img, 0, 0, 1, 1)
-  mtext('Greenup Seasonality at Duke Forest, Indiana', col = '#51fddc')
+  mtext('Greenup Seasonality at Duke Forest', col = '#51fddc')
   
   par(fig = c(0,1, 0, 0.3), new = T, mar=c(2,2,0,0))  
   plot(gcc_file_tbl$YYYYMMDD[1:i], 
@@ -88,6 +125,9 @@ show_midday <- function(i){
          col = '#ca5f63')
 }
 
+# dummy
+gcc_file_tbl[,gcc:=gcc_90]
+
 
 
 #number of image
@@ -106,4 +146,9 @@ saveVideo(interval = 0.5, # animation interval in seconds
             show_midday(i)
           })
 
+
+```
+
+
+The final video can be downloaded from [this link](animate_dukehw.mp4).
 

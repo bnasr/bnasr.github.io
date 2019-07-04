@@ -1,9 +1,39 @@
+---
+title: "Deciduous Phenology on a Latitudinal Gradient"
+author: "Bijan Seyednasrollah"
+date: "06/30/2019"
+output:
+  html_document: default
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Deciduous Phenology on a Latitudinal Gradient
+
+This is a quick tutorial to show how to make a time-lapse animation using PhenoCam images from six sites on latitudinal gradient. We select the following sites:
+
+* [Russell Sage](https://phenocam.sr.unh.edu/webcam/sites/russellsage/).
+* [Duke Forest](https://phenocam.sr.unh.edu/webcam/sites/dukehw/).
+* [Mammoth Cave](https://phenocam.sr.unh.edu/webcam/sites/mammothcave/).
+* [Harvard Forest](https://phenocam.sr.unh.edu/webcam/sites/harvard/).
+* [Cary Institute](https://phenocam.sr.unh.edu/webcam/sites/caryinstitute/).
+* [Laurentides](https://phenocam.sr.unh.edu/webcam/sites/laurentides/).
+
+
+#### First load the required R packages
+```{r req, eval=FALSE}
 library(maps)
 library(ggplot2)
 library(phenocamapi)
 library(data.table)
 library(jpeg)
 library(animation)
+```
+
+#### Obtain the timeseries
+```{r ts, eval=FALSE}
 
 #obtaining all the time-series directly from the PhenoCam server and binding them together
 ts <- rbind(
@@ -13,6 +43,10 @@ ts <- rbind(
   data.table(get_pheno_ts(site = 'harvard', vegType = 'DB', roiID = 1000, type = '1day'), site = 'harvard'),
   data.table(get_pheno_ts(site = 'caryinstitute', vegType = 'DB', roiID = 1000, type = '1day'), site = 'caryinstitute'),
   data.table(get_pheno_ts(site = 'laurentides', vegType = 'DB', roiID = 1000, type = '1day'), site = 'laurentides'))
+```
+
+#### Obtain the metadata and cleanup the data
+```{r metadata, eval=FALSE}
 
 phenos <- phenocamapi::get_phenos()
 
@@ -29,8 +63,16 @@ coords <- phenos[site%in%sites,.(site= factor(site, levels = sites), lon, lat)][
 # selecting the year for which the data will be plotted
 dt <- ts[year==2016,.(site, date= as.Date(date), gcc_90, midday_filename)]
 
+```
 
-# a little hacky commands to normalize the gcc values for all the sites based on their minimum values (before day 40) 
+
+#### Normalize the obtained time-series for each site
+This is important to be able to show them on the same axis.
+
+```{r norm, eval=FALSE}
+
+# a little hacky commands to normalize the gcc values for 
+# all the sites based on their minimum values (before day 40) 
 # and their maximum values between days 120 to 210
 dt <- merge(dt, 
             dt[yday(date)<40, .(gmin=median(gcc_90, na.rm = T)), site]) #to get the miniumn
@@ -53,7 +95,11 @@ dt[,gcc:=smooth(gcc),site]
 
 # a test plot to see the time-series before making the animation
 ggplot(dt, aes(date, gcc, color = site)) + geom_line()
+```
 
+
+#### Download all the selected midday images
+```{r download, eval=FALSE}
 # identifying files that already exist on the disk
 w <- !file.exists(dt$dest)
 
@@ -63,10 +109,14 @@ if(sum(w)>0)  # dowloading the files that don't exist on the disk
          destfile = dt$dest[w], 
          quiet = T, 
          method = 'curl')
+```
+
+#### Creating the single frame function
+```{r single, eval=FALSE}
 
 
 # the plotting function
-f  <- function(d){
+single_frame  <- function(d){
   
   # setting up the layout
   layout(mat = matrix(c(1,1, 2,2, 3,3, 4,4, 5,5, 6,6, 7, 7,7, 8), nrow = 4, ncol = 4, byrow = T))
@@ -114,8 +164,12 @@ f  <- function(d){
 
 # test to see if the function works for a single date
 pdf(file = 'tmp.pdf', width = 40, height = 50)
-f(as.Date('2016-12-30'))
+single_frame(as.Date('2016-12-30'))
 dev.off()
+````
+
+#### Making the video
+```{r anim, eval=FALSE}
 
 # exculding the dates that not all the sites have an image
 complete_dates <- sort(dt[!grepl(dest, pattern = 'None'),length(unique(site)),date][V1==6, date])
@@ -129,6 +183,11 @@ saveVideo(interval = 0.3, # animation interval in seconds
           video.name = 'six-sites.mp4',
           for(i in 1:n){
             cat(as.character(complete_dates[i]), '\n')
-            f(complete_dates[i])
+            single_frame(complete_dates[i])
           })
 
+
+```
+
+
+The final video can be downloaded from [this link](six-sites-phenology.mp4).
