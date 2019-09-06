@@ -225,6 +225,15 @@ pigmentsDT$gcc90_3day <- NA
 pigmentsDT$rcc90_1day <- NA
 pigmentsDT$rcc90_3day <- NA
 
+pigmentsDT$rmean_1day <- NA
+pigmentsDT$gmean_1day <- NA
+pigmentsDT$bmean_1day <- NA
+
+pigmentsDT$rmean_3day <- NA
+pigmentsDT$gmean_3day <- NA
+pigmentsDT$bmean_3day <- NA
+
+
 #mashup
 for(i in 1:nrow(pigmentsDT)){
   idate <- pigmentsDT[i,date]
@@ -241,6 +250,23 @@ for(i in 1:nrow(pigmentsDT)){
   
   if(length(rcc90_1day)==1) pigmentsDT$rcc90_1day[i] <- rcc90_1day
   if(length(rcc90_3day)==1) pigmentsDT$rcc90_3day[i] <- rcc90_3day
+
+  rmean_1day <- gcc[Tree.ID==iTree.ID&date==idate&frequency=='1day',r_mean]
+  gmean_1day <- gcc[Tree.ID==iTree.ID&date==idate&frequency=='1day',g_mean]
+  bmean_1day <- gcc[Tree.ID==iTree.ID&date==idate&frequency=='1day',b_mean]
+  
+  rmean_3day <- gcc[Tree.ID==iTree.ID&date%in%c(idate-1, idate, idate+1)&frequency=='3day',r_mean]
+  gmean_3day <- gcc[Tree.ID==iTree.ID&date%in%c(idate-1, idate, idate+1)&frequency=='3day',g_mean]
+  bmean_3day <- gcc[Tree.ID==iTree.ID&date%in%c(idate-1, idate, idate+1)&frequency=='3day',b_mean]
+  
+  if(length(rmean_1day)==1) pigmentsDT$rmean_1day[i] <- rmean_1day
+  if(length(gmean_1day)==1) pigmentsDT$gmean_1day[i] <- gmean_1day
+  if(length(bmean_1day)==1) pigmentsDT$bmean_1day[i] <- bmean_1day
+  
+  if(length(rmean_3day)==1) pigmentsDT$rmean_3day[i] <- rmean_3day
+  if(length(gmean_3day)==1) pigmentsDT$gmean_3day[i] <- gmean_3day
+  if(length(bmean_3day)==1) pigmentsDT$bmean_3day[i] <- bmean_3day
+  
   
 }
 
