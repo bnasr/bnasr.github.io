@@ -423,8 +423,8 @@ Once you have a subplot of grassland phenology across 2 climates answer the foll
 
 
 
-***
-##Flux Data Integration
+
+## Flux Data Integration
 
 Finally, let's pull in some cleaned AmeriFlux data:
 ```{r}
