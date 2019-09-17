@@ -7,7 +7,7 @@ output: html_document
 
 First let's load some packages:
 
-```{r, echo=FALSE}
+```{r}
 library(data.table, quietly = TRUE, warn.conflicts = FALSE)
 library(phenocamapi, quietly = TRUE, warn.conflicts = FALSE)
 library(plotly, quietly = TRUE, warn.conflicts = FALSE)
