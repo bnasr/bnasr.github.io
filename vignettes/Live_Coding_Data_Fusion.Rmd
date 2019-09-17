@@ -35,6 +35,7 @@ filter(flux_networks_name=='AMERIFLUX')%>%
 head(phenos)
 ```
 #external data from phenocamapi package
+
 Now let's select two combination phenocam-flux tower sites from *different* plant functional types to explore (e.g. one grassland site and one evergreen needleleaf site)
 
 ```{r}
