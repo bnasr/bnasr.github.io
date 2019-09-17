@@ -1,0 +1,499 @@
+---
+title: 'Live Coding: Data Fusion'
+author: "K Duffy"
+date: "7/11/2019"
+output: html_document
+---
+
+First let's load some packages:
+
+```{r, echo=FALSE}
+library(data.table, quietly = TRUE, warn.conflicts = FALSE)
+library(phenocamapi, quietly = TRUE, warn.conflicts = FALSE)
+library(plotly, quietly = TRUE, warn.conflicts = FALSE)
+library(phenocamr, quietly = TRUE, warn.conflicts = FALSE)
+library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
+```
+
+Let's start by pulling in a list of sites that have AmeriFlux towers and PhenoCams via the [phenocamapi R package](https://cran.r-project.org/package=phenocamapi):
+
+```{r}
+phenos=get_phenos()
+#and let's check the column names:
+colnames(phenos)
+
+```
+You can more about the phenocamapi R package from [here](https://bnasr.github.io/phenocamapi/).
+
+Notice that 'flux_data' (true-false), 'flux_networks', and 'flux_sitenames' are all variables that you can either filter by or retain the info of.  Let's grab all Ameriflux sites where we have the sitename stored:
+```{r}
+phenos=phenos%>%
+  filter(phenos$flux_data=='TRUE')%>%
+filter(flux_networks_name=='AMERIFLUX')%>%
+  filter(flux_sitenames!='NA')%>%
+  select(flux_sitenames, site, date_first, date_last, site_description, primary_veg_type, koeppen_geiger)
+head(phenos)
+```
+#external data from phenocamapi package
+Now let's select two combination phenocam-flux tower sites from *different* plant functional types to explore (e.g. one grassland site and one evergreen needleleaf site)
+
+```{r}
+#example
+GrassSites=phenos%>%
+  filter(phenos$primary_veg_type=='GR')
+head(GrassSites) #just viewing the top 6 sites in the dataframe
+
+DecidSites=phenos%>%
+  filter(phenos$primary_veg_type=='DB')
+head(DecidSites)
+```
+
+```{r}
+FirstGRSite=GrassSites[5, ] #I randomly chose a site in the table
+FirstGRSite
+
+SecondDBSite=DecidSites[3,]
+SecondDBSite
+```
+
+Chose your own sites and build out your code chunk here:
+```{r}
+ #Copy and past the code above to select sites that you are interested in
+#Drop your code here
+```
+
+[Koen Huffkens](https://khufkens.com/) developed the [phenocamr package](https://cran.r-project.org/web/packages/phenocamr/index.html), which streamlines access to quality controlled data.  We will now use this package to download and process site based data according to a standardized methodology.
+
+A full description of the methodology is provided in Scientific Data: Tracking vegetation phenology across diverse North American biomes using PhenoCam imagery (Richardson et al. 2018).
+
+```{r}
+#uncomment if you need to install via devtools
+#if(!require(devtools)){install.package(devtools)}
+#devtools::install_github("khufkens/phenocamr")
+library(phenocamr)
+```
+
+
+Use the dataframe you built to feed the phenocamr package.
+Note: you can choose either a daily or 3 day product
+
+```{r}
+phenocamr::download_phenocam(
+  frequency = 3,
+  veg_type = FirstGRSite$primary_veg_type,
+  roi_id = 1000,
+  site = paste0(FirstGRSite$site, '$'),
+  phenophase = TRUE,
+  out_dir = "data"
+  )
+
+phenocamr::download_phenocam(
+  frequency = 3,
+  veg_type = SecondDBSite$primary_veg_type,
+  roi_id = 1000,
+  site = paste0(SecondDBSite$site, '$'),
+  phenophase = TRUE,
+  out_dir = "data"
+  )
+```
+
+Now look in your working directory.  You have data!  Read it in:
+
+```{r}
+# load the time series data but replace the csv filename with whatever you downloaded
+df <- read.table("data/konza_GR_1000_3day.csv", header = TRUE, sep = ",")
+
+# read in the transition date file
+td <- read.table("data/konza_GR_1000_3day_transition_dates.csv",
+                 header = TRUE,
+                 sep = ",")
+```
+
+Let's take a look at the data:
+
+```{r}
+p = plot_ly() %>%
+  add_trace(
+  data = df,
+  x = ~ as.Date(date),
+  y = ~ smooth_gcc_90,
+  name = 'Smoothed GCC',
+  showlegend = TRUE,
+  type = 'scatter',
+  mode = 'line'
+) %>% add_markers(
+  data=df,
+  x ~ as.Date(date),
+  y = ~gcc_90,
+  name = 'GCC',
+  type = 'scatter',
+  color ='#07A4B5', 
+  opacity=.5
+)
+p
+```
+
+What patterns do you notice?  How would we go about determining say the start of spring? (SOS)
+
+###Threshold values
+
+Let's subset the transition date (td) for each year when 25% of the greenness amplitude (of the 90^th) percentile is reached (threshold_25).
+
+```{r}
+# select the rising (spring dates) for 25% threshold of Gcc 90
+spring <- td[td$direction == "rising" & td$gcc_value == "gcc_90",]
+
+```
+
+Now let's create a simple plot_ly line graph of the smooth Green Chromatic Coordinate (Gcc) and add points for transition dates:
+
+
+```{r}
+p = plot_ly() %>%
+  add_trace(
+  data = df,
+  x = ~ as.Date(date),
+  y = ~ smooth_gcc_90,
+  name = 'PhenoCam GCC',
+  showlegend = TRUE,
+  type = 'scatter',
+  mode = 'line'
+) %>% add_markers(
+  data= spring, 
+  x = ~ as.Date(spring$transition_25, origin = "1970-01-01"),
+  y = ~ spring$threshold_25,
+  type = 'scatter',
+  mode = 'marker',
+  name = 'Spring Dates')
+                
+p
+```
+
+Now we can see the transition date for each year of interest and the annual patterns of greenness.
+
+However, if you want more control over the parameters used during processing, you can run through the three default processing steps as implemented in download_phenocam() and set parameters manually.
+
+Of particular interest is the option to specify your own threshold used in determining transition dates. 
+
+What would be a reasonable threshold for peak greenness?  Or autumn onset?  Look at the ts dataset and phenocamr package and come up with a threshold.  Use the same code to plot it here:
+
+```{r}
+#print('code here')
+#some hint code
+#what does 'rising' versus 'falling' denote?
+#what threshold should you choose?
+#td <- phenophases("konza_GR_1000_3day.csv",
+#            internal = TRUE,
+#            upper_thresh = 0.8)
+fall <- td[td$direction == "falling" & td$gcc_value == "gcc_90",]
+#Now generate a fall dataframe, what metrics should you use?
+```
+
+
+
+Let's load in a function to make plotting smoother.  I'm dropped it here in the markdown so that you can edit it and re-run it as you see fit:
+```{r}
+gcc_plot = function(gcc, spring, fall){
+  unix = "1970-01-01"
+
+  p = plot_ly(
+    data = gcc,
+    x = ~ date,
+    y = ~ gcc_90,
+    showlegend = FALSE,
+    type = 'scatter',
+    mode = 'markers'
+  ) %>%
+    add_trace(
+      y = ~ smooth_gcc_90,
+      mode = "lines",
+      line = list(width = 2, color = "rgb(120,120,120)"),
+      name = "Gcc loess fit",
+      showlegend = TRUE
+    ) %>%
+    # SOS spring
+    # 10%
+    add_trace(
+      data = spring,
+      x = ~ as.Date(transition_10),
+      y = ~ threshold_10,
+      mode = "markers",
+      type = "scatter",
+      marker = list(color = "#7FFF00", symbol = "circle"),
+      name = "SOS (10%)",
+      showlegend = TRUE
+    ) %>%
+    add_segments(x = ~ as.Date(transition_10_lower_ci),
+                 xend = ~ as.Date(transition_10_upper_ci),
+                 # y = ~ 0,
+                 # yend = ~ 1,
+                 y = ~ threshold_10,
+                 yend = ~ threshold_10,
+                 line = list(color = "#7FFF00"),
+                 name = "SOS (10%) - CI"
+    ) %>%
+    # 25 %
+    add_trace(
+      x = ~ as.Date(transition_25),
+      y = ~ threshold_25,
+      mode = "markers",
+      type = "scatter",
+      marker = list(color = "#66CD00", symbol = "square"),
+      showlegend = TRUE,
+      name = "SOS (25%)"
+    ) %>%
+    add_segments(x = ~ as.Date(transition_25_lower_ci),
+                 xend = ~ as.Date(transition_25_upper_ci),
+                 y = ~ threshold_25,
+                 yend = ~ threshold_25,
+                 line = list(color = "#66CD00"),
+                 name = "SOS (25%) - CI"
+    ) %>%
+    # 50 %
+    add_trace(
+      x = ~ as.Date(transition_50),
+      y = ~ threshold_50,
+      mode = "markers",
+      type = "scatter",
+      marker = list(color = "#458B00", symbol = "diamond"),
+      showlegend = TRUE,
+      name = "SOS (50%)"
+    ) %>%
+    add_segments(x = ~ as.Date(transition_50_lower_ci),
+                 xend = ~ as.Date(transition_50_upper_ci),
+                 y = ~ threshold_50,
+                 yend = ~ threshold_50,
+                 line = list(color = "#458B00"),
+                 name = "SOS (50%) - CI"
+    ) %>%
+    
+    # EOS fall
+    # 50%
+    add_trace(
+      data = fall,
+      x = ~ as.Date(transition_50),
+      y = ~ threshold_50,
+      mode = "markers",
+      type = "scatter",
+      marker = list(color = "#FFB90F", symbol = "diamond"),
+      showlegend = TRUE,
+      name = "EOS (50%)"
+    ) %>%
+    add_segments(x = ~ as.Date(transition_50_lower_ci),
+                 xend = ~ as.Date(transition_50_upper_ci),
+                 y = ~ threshold_50,
+                 yend = ~ threshold_50,
+                 line = list(color = "#FFB90F"),
+                 name = "EOS (50%) - CI"
+    ) %>%
+    # 25 %
+    add_trace(
+      x = ~ as.Date(transition_25),
+      y = ~ threshold_25,
+      mode = "markers",
+      type = "scatter",
+      marker = list(color = "#CD950C", symbol = "square"),
+      showlegend = TRUE,
+      name = "EOS (25%)"
+    ) %>%
+    add_segments(x = ~ as.Date(transition_25_lower_ci),
+                 xend = ~ as.Date(transition_25_upper_ci),
+                 y = ~ threshold_25,
+                 yend = ~ threshold_25,
+                 line = list(color = "#CD950C"),
+                 name = "EOS (25%) - CI"
+    ) %>%
+    # 10 %
+    add_trace(
+      x = ~ as.Date(transition_10),
+      y = ~ threshold_10,
+      mode = "markers",
+      marker = list(color = "#8B6508", symbol = "circle"),
+      showlegend = TRUE,
+      name = "EOS (10%)"
+    ) %>%
+    add_segments(x = ~ as.Date(transition_10_lower_ci),
+                 xend = ~ as.Date(transition_10_upper_ci),
+                 y = ~ threshold_10,
+                 yend = ~ threshold_10,
+                 line = list(color = "#8B6508"),
+                 name = "EOS (10%) - CI"
+    )
+  return (p)
+}
+
+```
+
+```{r}
+
+gr1 = gcc_plot(df, spring, fall)
+gr1
+```
+
+Now let's look at inter-annual variation in spring onset.  What is the difference in 25% greenness onset for your first site? #hint, look at the spring dataframe you just generated
+
+```{r}
+#some hints to get you started
+yr=spring$transition_25
+yr=as.Date(yr)
+yr
+```
+
+```{r}
+#pull out spring transition dates into separate columns
+dates_split <- data.frame(date = yr,
+                 year = as.numeric(format(yr, format = "%Y")),
+                 month = as.numeric(format(yr, format = "%m")),
+                 day = as.numeric(format(yr, format = "%d")))
+
+#or track DOY changes
+doy=as.Date(yr, format='%d%m%Y')
+doy=lubridate::yday(doy)
+doy
+doy=as.data.frame(doy)
+spring_variation=cbind(yr, doy)
+```
+```{r}
+ p = plot_ly(
+    data = spring_variation,
+    x = ~ yr,
+    y = ~ doy,
+    showlegend = FALSE,
+    type = 'scatter',
+    mode = 'markers', 
+    name = "Year"
+  ) %>%
+    # 25 %
+    add_trace(
+      x = ~ yr,
+      mode = "lines",
+      line = list(width = 2, color = "rgb(120,120,120)"),
+      showlegend = FALSE
+      
+    )
+p
+```
+***
+###Comparing phenology of the same vegetation cover but across climate space
+
+As Dr. Richardson mentioned this morning in his introduction lecture, the same plant functional types (e.g. grasslands) can have very different phenological cycles.  Let's pick two phenocam grassland sites: one from a tropical climate (kamuela), and one from an arid climate #edit
+
+```{r}
+SecondGRSite=GrassSites[4,]
+phenocamr::download_phenocam(
+  frequency = 3,
+  veg_type = SecondGRSite$primary_veg_type,
+  roi_id = 1000,
+  site = paste0(SecondGRSite$site, '$'),
+  phenophase = TRUE,
+  out_dir = "data"
+  )
+```
+
+Now use the code you've generated above to pull in data from those sites:
+
+```{r}
+#code here
+# load the time series data but replace the csv filename with whatever you downloaded
+df <- read.table("data/kendall_GR_1000_3day.csv", header = TRUE, sep = ",")
+
+# read in the transition date file
+td <- read.table("data/kendall_GR_1000_3day_transition_dates.csv",
+                 header = TRUE,
+                 sep = ",")
+spring <- td[td$direction == "rising" & td$gcc_value == "gcc_90",]
+fall <- td[td$direction == "falling" & td$gcc_value == "gcc_90",]
+gr2 = gcc_plot(df, spring, fall)
+gr2
+```
+
+Now let's create a subplot of your grasslands to compare phenology, some hint code below:
+
+```{r}
+#some hint code for subplotting in plot_ly:
+p <- subplot(gr1, gr2, nrows=2)
+p
+```
+
+Once you have a subplot of grassland phenology across 2 climates answer the following questions here in the markdown:
+1. What seasonal patterns do you see?
+2. Do you think you set your thresholds correctly for transition dates/phenophases?  How might that very as a function of climate?
+
+
+
+
+***
+##Flux Data Integration
+
+Finally, let's pull in some cleaned AmeriFlux data:
+```{r}
+fluxts <- read.csv("data/example_flux/Bartlett_daily_gf_reformat.csv")
+head(fluxts)
+```
+
+
+Let's read in the phenocam data for that fluxtower and plot it:
+```{r}
+# load the time series data but replace the csv filename with whatever you downloaded
+df <- read.table("data/bartlettir_DB_1000_3day.csv", header = TRUE, sep = ",")
+
+# read in the transition date file
+td <- read.table("data/bartlettir_DB_1000_3day_transition_dates.csv",
+                 header = TRUE,
+                 sep = ",")
+spring <- td[td$direction == "rising" & td$gcc_value == "gcc_90",]
+fall <- td[td$direction == "falling" & td$gcc_value == "gcc_90",]
+gcc_p = gcc_plot(df, spring, fall)
+gcc_p
+```
+Now let's look at the flux data:
+```{r}
+p = plot_ly(
+    data = fluxts,
+    x = ~ date,
+    y = ~ GPP_U50,
+    showlegend = FALSE,
+    type = 'scatter',
+    mode = 'markers'
+  ) 
+p
+```
+
+We'll need to filter the phenocam data to match up with the fluxtower subset:
+```{r}
+sum(is.element(df$date, as.factor(fluxts$date)))
+```
+Now on your own use this indexing code above to filter the phenocam data to overlap with the fluxtower data
+
+```{r}
+df=df[is.element(df$date, as.factor(fluxts$date)), ]
+fluxts=fluxts[is.element(as.factor(fluxts$date),df$date), ]
+```
+
+```{r}
+
+p1 = plot_ly(
+    data = df,
+    x = ~ date,
+    y = ~ gcc_90,
+    showlegend = FALSE,
+    type = 'scatter',
+    mode = 'markers'
+  ) %>%
+    add_trace(
+      y = ~ smooth_gcc_90,
+      mode = "lines",
+      line = list(width = 2, color = "rgb(120,120,120)"),
+      name = "Gcc loess fit",
+      showlegend = TRUE
+    )
+p1
+```
+
+```{r}
+#some hint code for subplotting in plot_ly:
+p <- subplot(p, p1, nrows=2)
+p
+```
+
+You’ve now been introduced to the basics of working with the PhenoCam API, using the PhenoR package, and integrating PhenoCam and AmeriFlux data. Good luck conducting your own analyses!
