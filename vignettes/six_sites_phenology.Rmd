@@ -100,11 +100,14 @@ ggplot(dt, aes(date, gcc, color = site)) + geom_line()
 
 #### Download all the selected midday images
 ```{r download, eval=FALSE}
+
+dir.create('data', showWarnings = TRUE)
+
 # identifying files that already exist on the disk
 w <- !file.exists(dt$dest)
 
 if(sum(w)>0)  # dowloading the files that don't exist on the disk
-  mapply(download.file, 
+  tmp <- mapply(download.file, 
          url = dt$url[w], 
          destfile = dt$dest[w], 
          quiet = T, 
@@ -119,7 +122,7 @@ if(sum(w)>0)  # dowloading the files that don't exist on the disk
 single_frame  <- function(d){
   
   # setting up the layout
-  layout(mat = matrix(c(1,1, 2,2, 3,3, 4,4, 5,5, 6,6, 7, 7,7, 8), nrow = 4, ncol = 4, byrow = T))
+  layout(mat = matrix(c(1,1, 2,2, 3,3, 4,4, 5,5, 6,6, 7,7,7,7, 8,8), nrow = 3, ncol = 6, byrow = T))
   par(mar=c(0,0,0,0), bg = '#000000')
   
   for(i in 1:length(sites)){
@@ -163,7 +166,7 @@ single_frame  <- function(d){
 }
 
 # test to see if the function works for a single date
-pdf(file = 'tmp.pdf', width = 40, height = 50)
+png(filename = 'tmp.png', width = 30, height = 20, bg = NA, units = 'in', res = 300)
 single_frame(as.Date('2016-12-30'))
 dev.off()
 ````
@@ -178,8 +181,8 @@ n <- length(complete_dates)
 
 # make the animation using the saveVideo animation file
 saveVideo(interval = 0.3, # animation interval in seconds
-          ani.width = 1600,# image width in pixels
-          ani.height = 2000,# image height in pixels
+          ani.width = 1500,# image width in pixels
+          ani.height = 1000,# image height in pixels
           video.name = 'six-sites.mp4',
           for(i in 1:n){
             cat(as.character(complete_dates[i]), '\n')
