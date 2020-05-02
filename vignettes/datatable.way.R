@@ -143,3 +143,8 @@
 ## #Deletes the columns specified in the variable Cols.chosen (V1 and V2)
 ## DT[, (Cols.chosen) := NULL]
 
+
+## ------------------------------------------------------------------------
+## library(data.table)
+## fread('~/Downloads/co)
+

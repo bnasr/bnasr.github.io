@@ -23,7 +23,7 @@ In this tutorial, you will learn:
 
 **_data.table_**'s are powerful data structures for storing tabular data in R. **_data.table_**'s may look similar to basic **_data.table_**'s, but they are much more powerful for not only storing data but also for performing on the fly data analyses and data queries **_data.table_**'s use high performance computing for fast and quick task accomplishments. 
 
-You can download the [**_R_**](vignettes/datatable.way/datatable.way.R) code and the [**_R Markdown_**](vignettes/datatable.way/datatable.way.Rmd) document of this tutorial.
+You can download the [**_R_**](vignettes/datatable.way.R) code and the [**_R Markdown_**](vignettes/datatable.way.Rmd) document of this tutorial.
 
 To work with **_data.table_**'s, first you need to install the **data.table** _R_ package.
 
@@ -207,6 +207,28 @@ DT[, (Cols.chosen) := NULL]
 ```
 
 
+## Assignment
+ - Using basic exploratory analyses, find out which counties and which states have passed their COVID-19 peak.
+ - 
+ 
+Hint:You can obtain tha main dataset from [this link](https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv)
+
+```{r}
+library(data.table)
+
+#download covid data
+covid19_url <- 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv'
+download.file(url = covid19_url, destfile = basename(covid19_url))
+
+covid <- fread(basename(covid19_url))
+
+#reorganizing the data from columns to rows
+covid <- melt(covid, id.vars = 1:11, variable.name = 'date', value.name = 'count')
+
+covid[, Date := as.Date(date, format = '%m/%d/%y')]
+
+covid
+```
 
 ## More on `data.tables`:
 - [R For Data Science Cheat Sheet](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/datatable_Cheat_Sheet_R.pdf)
