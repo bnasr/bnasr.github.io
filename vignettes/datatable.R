@@ -1,6 +1,6 @@
 ## ---- include=FALSE------------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE,  eval = TRUE)
-knitr::purl('datatable.way.Rmd')
+knitr::purl('datatable.Rmd')
 
 
 ## ---- eval=FALSE---------------------------------------------------------
