@@ -21,7 +21,7 @@ In this tutorial, you will learn:
 
 ## Introduction
 
-**_data.table_**'s are powerful data structures for storing tabular data in R. **_data.table_**'s may look similar to basic **_data.table_**'s, but they are much more powerfull for not only storing data but also for perfomoring on the fly data analyses and data anquieries. **_data.table_**'s use high performance computing for fast and quick taks accomplishemnts. 
+**_data.table_**'s are powerful data structures for storing tabular data in R. **_data.table_**'s may look similar to basic **_data.table_**'s, but they are much more powerful for not only storing data but also for performing on the fly data analyses and data queries **_data.table_**'s use high performance computing for fast and quick task accomplishments. 
 
 You can download the [**_R_**](vignettes/datatable.way/datatable.way.R) code and the [**_R Markdown_**](vignettes/datatable.way/datatable.way.Rmd) document of this tutorial.
 
