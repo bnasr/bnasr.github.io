@@ -1,0 +1,214 @@
+---
+title: "Data analysis, the data.table way"
+author: "Bijan Seyednasrollah"
+date: "5/1/2020"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,  eval = FALSE)
+knitr::purl('datatable.way.Rmd')
+```
+
+
+## Objectives
+
+In this tutorial, you will learn:
+
+1. what data.tables are,
+2. why they are so powerful, and
+3. how it works.
+
+## Introduction
+
+**_data.table_**'s are powerful data structures for storing tabular data in R. **_data.table_**'s may look similar to basic **_data.table_**'s, but they are much more powerfull for not only storing data but also for perfomoring on the fly data analyses and data anquieries. **_data.table_**'s use high performance computing for fast and quick taks accomplishemnts. 
+
+You can download the [**_R_**](vignettes/datatable.way.R) code and the [**_R Markdown_**](vignettes/datatable.way.Rmd) document of this tutorial.
+
+To work with **_data.table_**'s, first you need to install the **data.table** _R_ package.
+
+```{r, eval=FALSE}
+# install from CRAN
+install.packages('data.table', repos = "http://cran.us.r-project.org")
+
+# load the package
+library(data.table)
+```
+
+
+## Format
+The general format is `DT[I, J, BY]` which means: "Take DT, subset rows using *I*, then calculate *J* grouped by *BY*"
+
+### Create a data.table
+```{r, }
+library(data.table) 
+
+set.seed(45L)
+
+DT <- data.table(V1=c(1L,2L),
+                 V2=LETTERS[1:3], 
+                 V3=round(rnorm(4),4),
+                 V4=1:12)
+
+DT
+
+```
+
+### Subsetting rows using `I`
+```{r, }
+#Subsetting rows by numbers.
+DT[3:5,] #or DT[3:5]  #Selects third to fifth row.
+```
+
+Use column names to select rows in `I` based on a condition using fast automatic indexing. Or for selecting on multiple values:
+DT[column %in% c("value1","value2")], which selects all rows that have value1 or value2 in column.
+
+```{r, }
+#Selects all rows that have value A in column V2.
+DT[ V2 == "A"] 
+
+# Select all rows that have the value A or C in column V2.
+DT[ V2 %in% c("A","C")] 
+```
+
+
+### Manipulating on columns in `J`
+
+Select one column in `J`
+```{r, }
+#Column V2 is returned as a vector.
+DT[,V2] 
+```
+
+Select several columns in `J`.
+```{r, }
+#Columns V2 and V3 are returned as a data.table.
+DT[,.(V2,V3)]
+```
+
+`.()` is an alias to `list()`. If `.()` is used, the returned value is a data.table. If `.()` is not used, the result is a vector.
+
+Call functions in `J`:
+```{r, }
+#Returns the sum of all [1] 18 elements of column V1 in a vector.
+DT[,sum(V1)]  
+```
+
+Computing on several columns. 
+```{r, }
+#Returns the sum of all V1 V2 elements of column V1 and the standard deviation of V3 in a data.table.
+DT[,.(sum(V1),sd(V3))] 
+```
+
+Assigning column names to computed columns.
+```{r, }
+#The same as above, but with new names.
+DT[,.(Aggregate = sum(V1), Sd.V3 = sd(V3))] 
+```
+
+Columns get recycled if different length.
+```{r, }
+#Selects column V1, and compute std. dev. of V3, which returns a single value and gets recycled
+DT[,.(V1, Sd.V3 = sd(V3))]
+```
+
+Multiple expressions can be wrapped in curly braces.
+```{r, }
+#Print column V2 and plot V3.
+DT[,{
+  print(V2)
+  plot(V3)
+  NULL
+  }]
+```
+
+
+### Doing `J` `BY` group
+Doing j by group:
+```{r, }
+#Calculates the sum of V4, for every group in V1
+DT[,.(V4.Sum = sum(V4)),by=V1]
+```
+
+Doing j by several groups using `.()`:
+```{r, }
+#The same as above, but for every group in V1 and V2.
+DT[,.(V4.Sum = sum(V4)),by=.(V1,V2)]
+```
+
+Call functions in `BY`:
+```{r, }
+#Calculates the sum of V4, for every group in sign(V1-1).
+DT[,.(V4.Sum = sum(V4)),by=sign(V1-1)] 
+```
+
+Assigning new column names in `BY`:
+```{r, }
+#Same as above, but with a new name for the variable we are grouping by.
+DT[,.(V4.Sum = sum(V4)), by=.(V1.01 = sign(V1-1))] 
+```
+
+Grouping only on a subset by specifying `I`. 
+```{r, }
+#Calculates the sum of V4, for every group in V1, after subsetting on the first five rows.
+DT[1:5,.(V4.Sum = sum(V4)),by=V1] 
+```
+
+Using `.N` to get the total number of observations of each group.
+```{r, }
+#Count the number of rows for every group in V1.
+DT[,.N, by=V1] 
+```
+
+### Adding/Updating columns `BY` reference in `J` using `:=`
+Adding/updating a column by reference using `:=` in one line.
+**Watch out:** extra assignment (DT <- DT[...]) is redundant.
+```{r, }
+#Column V1 is updated by what is after :=.
+DT[, V1 := round(exp(V1),2)]
+```
+
+Adding/updating several columns by reference using `:=`:
+```{r}
+# Column V1 and V2 are updated by what is after :=.
+DT[, c("V1","V2") := list(round(exp(V1),2), LETTERS[4:6])]
+```
+
+
+Using functional `:=`:
+```{r, }
+#Another way to write the same line as above this one, but easier to write
+# comments side-by-side. Also, when [] is added the result is printed to the screen
+
+DT[, ':=' (V1 = round(exp(V1),2), V2 = LETTERS[4:6])][]
+```
+
+Remove a column instantly using `:=`:
+```{r, }
+#Removes column V1
+DT[, V1 := NULL]
+```
+
+Remove several columns instantly using `:=`:
+```{r, }
+#Removes columns V1 and V2.
+DT[, c("V1","V2") := NULL]
+```
+
+Wrap the name of a variable which contains column names in parenthesis to pass the contents of that variable to be deleted:
+```{r, }
+Cols.chosen = c("A","B")
+
+#Watch out: this deletes the column with column name Cols.chosen. 
+DT[, Cols.chosen := NULL]
+
+#Deletes the columns specified in the variable Cols.chosen (V1 and V2)
+DT[, (Cols.chosen) := NULL]
+```
+
+
+
+## More on `data.tables`:
+- [R For Data Science Cheat Sheet](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/datatable_Cheat_Sheet_R.pdf)
+- [Data Transformation with data.table](https://www.beoptimized.be/pdf/R_Data_Transformation.pdf)
+- Interactive course: [Data Analysis in R, the data.table Way](https://learn.datacamp.com/courses/data-table-data-manipulation-r-tutorial)
