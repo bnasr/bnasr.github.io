@@ -171,34 +171,47 @@ covid$date <- NULL
 colnames(covid)
 str(covid)
 
-
 #plot covid cases in Coconino county, AZ
 covid[Combined_Key == 'Coconino, Arizona, US', plot(Date, count)]
 
+#define a colujmn for New Cases
+covid[, new_cases := c(NA, diff(count)), Combined_Key]
+covid[Combined_Key == 'Coconino, Arizona, US', plot(Date, new_cases)]
+
+#plot covid cases in New York City
+covid[Combined_Key == 'New York City, New York, US', plot(Date, new_cases)]
+
 #group by Combined_Key
-covid[, max_count := max(count), Combined_Key]
+covid[, max_new_cases := max(new_cases, na.rm = TRUE), Combined_Key]
 
 #show most recent data
 covid[Date==Sys.Date()-1, ]
 
 # print the names of the counties where number of cases is smaller than the maximum for that county
-covid[(Date==Sys.Date()-1) & count < max_count, .(Combined_Key)]
+covid[(Date==Sys.Date()-1) & new_cases < max_new_cases, .(Combined_Key)]
 
 #create a new table for states
-covid_states <- covid[, .(state_count = sum(count)), .(State = Province_State, Date)]
+covid_states <- covid[Province_State%in%state.name, 
+                      .(state_new_cases = sum(new_cases)),
+                      .(State = Province_State, Date)]
 covid_states
 
 #plot Arizona cases
-covid_states[State=='Arizona', plot(Date, state_count)]
+covid_states[State=='Arizona', plot(Date, state_new_cases)]
 
 # find maximum for each state
-covid_states[, max_state_count := max(state_count), State]
+covid_states[, state_max := max(state_new_cases, na.rm = TRUE), State]
 
-# print the names of the states where number of cases is smaller than the maximum for that state
-covid_states[(Date==Sys.Date()-1)&state_count>max_state_count, .(State, state_count)]
+# when state's peak occured and sort states names by the peak's date
+covid_states[state_new_cases==state_max, 
+             .(state_max_date = min(Date)),
+             State][order(state_max_date)]
+
+# print the names of the states where number of cases is larger than the maximum for that state
+covid_states[(Date==Sys.Date()-1)&state_new_cases>=state_max, .(State, state_new_cases)]
 
 #plot the trend for the country
-covid_usa <- covid[, .(Count = sum(count)), .(Date)]
+covid_usa <- covid[, .(Count = sum(new_cases)), .(Date)]
 
 covid_usa[, plot(Date, Count)]
 
