@@ -308,4 +308,4 @@ covid_usa[, plot(Date, Count)]
 
 ## Survey
 
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScK9ZS8WhTCZ2BElAOy0QJu9m0ChBAbOqy0ektf62Q8eOL1Tw/viewform?embedded=true" width="800" height="1434" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScK9ZS8WhTCZ2BElAOy0QJu9m0ChBAbOqy0ektf62Q8eOL1Tw/viewform?embedded=true" width="800" height="1000" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
