@@ -5,6 +5,17 @@ date: "5/1/2020"
 output: html_document
 ---
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-30213986-7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-30213986-7');
+</script>
+
+
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,  eval = TRUE)
 knitr::purl('datatable.Rmd')
