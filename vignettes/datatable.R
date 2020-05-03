@@ -1,5 +1,5 @@
 ## ---- include=FALSE------------------------------------------------------
-knitr::opts_chunk$set()
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::purl('datatable.Rmd')
 
 
