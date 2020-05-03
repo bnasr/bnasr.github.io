@@ -8,11 +8,11 @@ output: html_document
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-30213986-7"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
 
-  gtag('config', 'UA-30213986-7');
+gtag('config', 'UA-30213986-7');
 </script>
 
 
@@ -130,7 +130,7 @@ DT[,{
   print(V2)
   plot(V3)
   NULL
-  }]
+}]
 ```
 
 
@@ -218,15 +218,17 @@ DT[, (Cols.chosen) := NULL]
 ```
 
 
-## Example
-Using basic exploratory analyses:
+## Example: COVID-19 Pandemic in the US
+Using basic exploratory analyses to:
 
-1. Plot the trend for number of cases in Coconino county and the state of Arizona, 
+1. Plot the trend for number of total and new cases in Coconino county and the state of Arizona and the US, 
 2. Show which counties and which states have passed their COVID-19 peak.
- 
- 
-**Hint**:You can obtain the main dataset containing number of COVID-19 cases in the US from [this link](https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv)
+3. Determine which counties and states have the highest number of cases per population. 
 
+
+**Hint I**: You can obtain the main dataset containing number of COVID-19 cases in the US from [this link](https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv).
+
+**Hint II**: You can obtain counties populaiton data from [this link](https://data.nber.org/census/popest/county_population.csv).
 ```{r}
 library(data.table)
 
@@ -298,6 +300,50 @@ covid_usa <- covid[, .(Count = sum(new_cases)), .(Date)]
 
 covid_usa[, plot(Date, Count)]
 
+```
+
+## Combine with the population data
+We need to download the population data and merge it with the Covid-19 data. However, this is tricky as we need a common column with matching values between the two tables. We can use the `Combined_Key` column from the `covid` and try to make a similar column in the population table that we are going to download.
+```{r}
+ppl_url <- 'https://data.nber.org/census/popest/county_population.csv'
+
+# create an temporary file path to save the file
+ppl_file <- tempfile(fileext = '.csv', pattern = basename(ppl_url))
+
+#download the file
+download.file(url = ppl_url, destfile = ppl_file)
+
+#load the file as a 
+ppl <- fread(ppl_file)
+
+#remove extra data and reorganize
+colnames(ppl)
+ppl_counties <- ppl[grepl(areaname, pattern = 'County') & county_fips > 1000,
+                    .(county_name, 
+                      state_name,
+                      population = pop2014)]
+
+ppl_counties[, area := paste0( gsub(county_name, pattern = ' County', replacement = ','), state_name, ', US')]
+```
+
+Now, we can merge the two datasets using the `area` column in `ppl_counties` and the `Combined_Key` column in `covid`. There might be few missing rows between the two, but for the purpose of this workshop, that is fine:
+
+```{r}
+covid_ppl <- merge(covid[, .(Combined_Key, Date, covid.counts = count)], 
+                   ppl_counties[, .(area, 
+                                    state = state_name, 
+                                    population)], by.x = 'Combined_Key', by.y = 'area')
+
+# caclulate per population cases and put it in a new table
+per_ppl <- covid_ppl[Date==Sys.Date() - 1, .( area = Combined_Key, 
+                                              state, 
+                                              cases_per_million = covid.counts / population * 1e6)]
+
+# top 20
+per_ppl[order(-cases_per_million)][1:20]
+
+# areas with zero number of cases
+per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 ```
 
 ## More on `data.tables`:

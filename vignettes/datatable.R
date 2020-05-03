@@ -74,7 +74,7 @@ DT[,{
   print(V2)
   plot(V3)
   NULL
-  }]
+}]
 
 
 ## ------------------------------------------------------------------------
@@ -215,4 +215,44 @@ covid_usa <- covid[, .(Count = sum(new_cases)), .(Date)]
 
 covid_usa[, plot(Date, Count)]
 
+
+
+## ------------------------------------------------------------------------
+ppl_url <- 'https://data.nber.org/census/popest/county_population.csv'
+
+# create an temporary file path to save the file
+ppl_file <- tempfile(fileext = '.csv', pattern = basename(ppl_url))
+
+#download the file
+download.file(url = ppl_url, destfile = ppl_file)
+
+#load the file as a 
+ppl <- fread(ppl_file)
+
+#remove extra data and reorganize
+colnames(ppl)
+ppl_counties <- ppl[grepl(areaname, pattern = 'County') & county_fips > 1000,
+                    .(county_name, 
+                      state_name,
+                      population = pop2014)]
+
+ppl_counties[, area := paste0( gsub(county_name, pattern = ' County', replacement = ','), state_name, ', US')]
+
+
+## ------------------------------------------------------------------------
+covid_ppl <- merge(covid[, .(Combined_Key, Date, covid.counts = count)], 
+                   ppl_counties[, .(area, 
+                                    state = state_name, 
+                                    population)], by.x = 'Combined_Key', by.y = 'area')
+
+# caclulate per population cases and put it in a new table
+per_ppl <- covid_ppl[Date==Sys.Date() - 1, .( area = Combined_Key, 
+                                              state, 
+                                              cases_per_million = covid.counts / population * 1e6)]
+
+# top 20
+per_ppl[order(-cases_per_million)][1:20]
+
+# areas with zero number of cases
+per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 
