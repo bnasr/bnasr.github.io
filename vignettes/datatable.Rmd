@@ -2,6 +2,7 @@
 title: "Data analysis, the data.table way"
 author: "Bijan Seyednasrollah"
 date: "5/1/2020"
+runtime: shiny
 output: html_document
 ---
 
@@ -17,7 +18,7 @@ gtag('config', 'UA-30213986-7');
 
 
 ```{r, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE)
 knitr::purl('datatable.Rmd')
 ```
 
@@ -40,7 +41,7 @@ To work with **_data.table_**'s, first you need to install the **data.table** _R
 
 ```{r, eval=FALSE}
 # install from CRAN
-install.packages('data.table', repos = "http://cran.us.r-project.org")
+if(!require('data.table'))install.packages('data.table', repos = "http://cran.us.r-project.org")
 
 # load the package
 library(data.table)
@@ -348,14 +349,21 @@ per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 
 
 ## Interactive Plots (optional)
+
+###Using plotly
 Using the `plotly` pachage in `R`, we can make beautiful ineractive plots. We start a simple but you can explore `plotly` functionalities further.
+First install the required packages:
 ```{r}
 # install from CRAN
-install.packages('plotly', repos = "http://cran.us.r-project.org")
+if(!require('plotly'))install.packages('plotly', repos = "http://cran.us.r-project.org")
 
 # load the package
 library(plotly)
+```
 
+
+Now, we can code our plotly:
+```{r}
 # create a dataset of states data with USA data
 data <- rbind(covid_states[, .(Date, 
                                State, 
@@ -391,6 +399,86 @@ fig
 
 ```
 
+### Using Shiny and ggplot
+
+First install the required packages:
+```{r}
+# install from CRAN
+if(!require('shiny'))install.packages('shiny', repos = "http://cran.us.r-project.org")
+
+# load the package
+library(shiny)
+```
+
+
+Now, let's code it:
+```{r, cache=FALSE, echo=FALSE}
+
+# input state name
+selectInput(inputId = 'state',
+            label = 'State',
+            choices = state.name, 
+            selected = 'Arizona',
+            multiple = FALSE,
+            selectize = TRUE, 
+            width = NULL,
+            size = NULL)
+
+#input what type of data to plot
+radioButtons(inputId = 'type', 
+             label = NULL,
+             choices = c('New Cases', 'Total Cases'))
+
+renderPlotly({
+  data <- covid[Province_State%in%state.name,
+                .(Date,
+                  State = Province_State,
+                  County = Combined_Key,
+                  'Total Cases' = count,
+                  'New Cases' = new_cases)]
+  
+  # reorganized
+  data <- melt(data,
+               id.vars = 1:3,
+               variable.name = 'type',
+               value.name = 'Count')
+  
+  data <- data[, County := gsub(pattern = ', US',
+                                replacement = '',
+                                County)]
+  # remove erroneous data
+  data[Count<0, Count := 0]
+  
+  # setting up the plot
+  f <- list(
+    family = "Courier New, monospace",
+    size = 18,
+    color = "#7f7f7f"
+  )
+  
+  x <- list(
+    title = "Date",
+    titlefont = f
+  )
+  
+  y <- list(
+    title = paste("Number of", input$type),
+    titlefont = f
+  )
+  
+  fig <- plot_ly(data = data[type == input$type & State ==input$state], 
+                 x = ~Date,
+                 y = ~Count,
+                 color = ~County,
+                 mode = 'lines+markers')
+  
+  fig <- fig %>% layout(xaxis = x, yaxis = y)
+  
+  fig
+  
+})
+
+```
 ## Excersie: COVID-19 per Area
 Using the above datasets and data from [The United States Census Bureau](https://www.census.gov/), determine which counties have the highest number of COVID-19 cases per area. 
 
