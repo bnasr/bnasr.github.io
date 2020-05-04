@@ -358,17 +358,34 @@ library(plotly)
 
 # create a dataset of states data with USA data
 data <- rbind(covid_states[, .(Date, 
-                             State, 
-                             Count = state_new_cases)],
+                               State, 
+                               Count = state_new_cases)],
               covid_usa[, .(Date, 
                             State = 'USA',
                             Count)])
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+
+x <- list(
+  title = "Date",
+  titlefont = f
+)
+
+y <- list(
+  title = "Daily New Cases",
+  titlefont = f
+)
 
 fig <- plot_ly(data = data, 
                x = ~Date,
                y = ~Count,
                color = ~State,
                mode = 'lines+markers')
+
+fig <- fig %>% layout(xaxis = x, yaxis = y)
 
 fig
 
