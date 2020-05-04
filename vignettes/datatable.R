@@ -1,8 +1,3 @@
-## ---- include=FALSE------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
-knitr::purl('datatable.Rmd')
-
-
 ## ---- eval=FALSE---------------------------------------------------------
 ## # install from CRAN
 ## install.packages('data.table', repos = "http://cran.us.r-project.org")
@@ -192,7 +187,7 @@ covid[(Date==Sys.Date()-1) & new_cases < max_new_cases, .(Combined_Key)]
 
 #create a new table for states
 covid_states <- covid[Province_State%in%state.name, 
-                      .(state_new_cases = sum(new_cases)),
+                      .(state_new_cases = sum(new_cases, na.rm = TRUE)),
                       .(State = Province_State, Date)]
 covid_states
 
@@ -255,4 +250,29 @@ per_ppl[order(-cases_per_million)][1:20]
 
 # areas with zero number of cases
 per_ppl[cases_per_million == 0, .(area, state)][order(state)]
+
+
+## ------------------------------------------------------------------------
+# install from CRAN
+install.packages('plotly', repos = "http://cran.us.r-project.org")
+
+# load the package
+library(plotly)
+
+# create a dataset of states data with USA data
+data <- rbind(covid_states[, .(Date, 
+                             State, 
+                             Count = state_new_cases)],
+              covid_usa[, .(Date, 
+                            State = 'USA',
+                            Count)])
+
+fig <- plot_ly(data = data, 
+               x = ~Date,
+               y = ~Count,
+               color = ~State,
+               mode = 'lines+markers')
+
+fig
+
 
