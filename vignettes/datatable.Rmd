@@ -352,7 +352,7 @@ per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 
 ## Interactive Plots (optional)
 
-###Using plotly
+### Using Plotly
 Using the `plotly` pachage in `R`, we can make beautiful ineractive plots. We start a simple but you can explore `plotly` functionalities further.
 First install the required packages:
 ```{r, results = 'hide'}
@@ -401,7 +401,7 @@ fig
 
 ```
 
-### Using Shiny and ggplot
+### Using Shiny and Plotly
 
 First install the required packages:
 ```{r, results = 'hide'}
