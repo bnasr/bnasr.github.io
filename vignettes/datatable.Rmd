@@ -2,6 +2,7 @@
 title: "Data analysis, the data.table way"
 author: "Bijan Seyednasrollah"
 date: "5/1/2020"
+runtime: shiny_prerendered
 output: html_document
 ---
 
