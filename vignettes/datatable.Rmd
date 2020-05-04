@@ -18,7 +18,7 @@ gtag('config', 'UA-30213986-7');
 
 
 ```{r, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::purl('datatable.Rmd')
 ```
 
@@ -73,7 +73,8 @@ DT[3:5,] #or DT[3:5]  #Selects third to fifth row.
 ```
 
 Use column names to select rows in `I` based on a condition using fast automatic indexing. Or for selecting on multiple values:
-DT[column %in% c("value1","value2")], which selects all rows that have value1 or value2 in column.
+
+`DT[column %in% c("value1","value2")]`, which selects all rows that have `value1` or `value2` in column.
 
 ```{r, }
 #Selects all rows that have value A in column V2.
@@ -136,13 +137,13 @@ DT[,{
 
 
 ### Doing `J` `BY` group
-Doing j by group:
+Doing `J` by group:
 ```{r, }
 #Calculates the sum of V4, for every group in V1
 DT[,.(V4.Sum = sum(V4)),by=V1]
 ```
 
-Doing j by several groups using `.()`:
+Doing `J` `BY` several groups using `.()`:
 ```{r, }
 #The same as above, but for every group in V1 and V2.
 DT[,.(V4.Sum = sum(V4)),by=.(V1,V2)]
@@ -174,7 +175,8 @@ DT[,.N, by=V1]
 
 ### Adding/Updating columns `BY` reference in `J` using `:=`
 Adding/updating a column by reference using `:=` in one line.
-**Watch out:** extra assignment (DT <- DT[...]) is redundant.
+
+**Watch out:** extra assignment (`DT <- DT[...]`) is redundant.
 ```{r, }
 #Column V1 is updated by what is after :=.
 DT[, V1 := round(exp(V1),2)]
@@ -304,7 +306,7 @@ covid_usa[, plot(Date, Count)]
 ```
 
 ## Combine with the population data
-We need to download the population data and merge it with the Covid-19 data. However, this is tricky as we need a common column with matching values between the two tables. We can use the `Combined_Key` column from the `covid` and try to make a similar column in the population table that we are going to download.
+We need to download the population data and merge it with the COVID-19 data. However, this is tricky as we need a common column with matching values between the two tables. We can use the `Combined_Key` column from the `covid` and try to make a similar column in the population table that we are going to download.
 ```{r}
 ppl_url <- 'https://data.nber.org/census/popest/county_population.csv'
 
@@ -353,7 +355,7 @@ per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 ###Using plotly
 Using the `plotly` pachage in `R`, we can make beautiful ineractive plots. We start a simple but you can explore `plotly` functionalities further.
 First install the required packages:
-```{r}
+```{r, results = 'hide'}
 # install from CRAN
 if(!require('plotly'))install.packages('plotly', repos = "http://cran.us.r-project.org")
 
@@ -402,7 +404,7 @@ fig
 ### Using Shiny and ggplot
 
 First install the required packages:
-```{r}
+```{r, results = 'hide'}
 # install from CRAN
 if(!require('shiny'))install.packages('shiny', repos = "http://cran.us.r-project.org")
 

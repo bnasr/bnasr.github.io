@@ -252,7 +252,7 @@ per_ppl[order(-cases_per_million)][1:20]
 per_ppl[cases_per_million == 0, .(area, state)][order(state)]
 
 
-## ------------------------------------------------------------------------
+## ---- results = 'hide'---------------------------------------------------
 # install from CRAN
 if(!require('plotly'))install.packages('plotly', repos = "http://cran.us.r-project.org")
 
@@ -296,7 +296,7 @@ fig
 
 
 
-## ------------------------------------------------------------------------
+## ---- results = 'hide'---------------------------------------------------
 # install from CRAN
 if(!require('shiny'))install.packages('shiny', repos = "http://cran.us.r-project.org")
 
