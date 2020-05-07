@@ -2,6 +2,7 @@
 title: "Data analysis, the data.table way"
 author: "Bijan Seyednasrollah"
 date: "5/1/2020"
+runtime: shiny
 output: html_document
 ---
 
@@ -413,7 +414,7 @@ library(shiny)
 
 
 Now, let's code it:
-```{r, echo=TRUE,eval=FALSE}
+```{r, echo=FALSE,eval=TRUE}
 
 # input state name
 selectInput(inputId = 'state',
