@@ -304,70 +304,70 @@ if(!require('shiny'))install.packages('shiny', repos = "http://cran.us.r-project
 library(shiny)
 
 
-## ---- echo=FALSE,eval=TRUE-----------------------------------------------
-
-# input state name
-selectInput(inputId = 'state',
-            label = 'State',
-            choices = state.name, 
-            selected = 'Arizona',
-            multiple = FALSE,
-            selectize = TRUE, 
-            width = NULL,
-            size = NULL)
-
-#input what type of data to plot
-radioButtons(inputId = 'type', 
-             label = NULL,
-             choices = c('New Cases', 'Total Cases'))
-
-renderPlotly({
-  data <- covid[Province_State%in%state.name,
-                .(Date,
-                  State = Province_State,
-                  County = Combined_Key,
-                  'Total Cases' = count,
-                  'New Cases' = new_cases)]
-  
-  # reorganized
-  data <- melt(data,
-               id.vars = 1:3,
-               variable.name = 'type',
-               value.name = 'Count')
-  
-  data <- data[, County := gsub(pattern = ', US',
-                                replacement = '',
-                                County)]
-  # remove erroneous data
-  data[Count<0, Count := 0]
-  
-  # setting up the plot
-  f <- list(
-    family = "Courier New, monospace",
-    size = 18,
-    color = "#7f7f7f"
-  )
-  
-  x <- list(
-    title = "Date",
-    titlefont = f
-  )
-  
-  y <- list(
-    title = paste("Number of", input$type),
-    titlefont = f
-  )
-  
-  fig <- plot_ly(data = data[type == input$type & State ==input$state], 
-                 x = ~Date,
-                 y = ~Count,
-                 color = ~County,
-                 mode = 'lines+markers')
-  
-  fig <- fig %>% layout(xaxis = x, yaxis = y)
-  
-  fig
-  
-})
-
+## ---- echo=TRUE, eval=FALSE----------------------------------------------
+## 
+## # input state name
+## selectInput(inputId = 'state',
+##             label = 'State',
+##             choices = state.name,
+##             selected = 'Arizona',
+##             multiple = FALSE,
+##             selectize = TRUE,
+##             width = NULL,
+##             size = NULL)
+## 
+## #input what type of data to plot
+## radioButtons(inputId = 'type',
+##              label = NULL,
+##              choices = c('New Cases', 'Total Cases'))
+## 
+## renderPlotly({
+##   data <- covid[Province_State%in%state.name,
+##                 .(Date,
+##                   State = Province_State,
+##                   County = Combined_Key,
+##                   'Total Cases' = count,
+##                   'New Cases' = new_cases)]
+## 
+##   # reorganized
+##   data <- melt(data,
+##                id.vars = 1:3,
+##                variable.name = 'type',
+##                value.name = 'Count')
+## 
+##   data <- data[, County := gsub(pattern = ', US',
+##                                 replacement = '',
+##                                 County)]
+##   # remove erroneous data
+##   data[Count<0, Count := 0]
+## 
+##   # setting up the plot
+##   f <- list(
+##     family = "Courier New, monospace",
+##     size = 18,
+##     color = "#7f7f7f"
+##   )
+## 
+##   x <- list(
+##     title = "Date",
+##     titlefont = f
+##   )
+## 
+##   y <- list(
+##     title = paste("Number of", input$type),
+##     titlefont = f
+##   )
+## 
+##   fig <- plot_ly(data = data[type == input$type & State ==input$state],
+##                  x = ~Date,
+##                  y = ~Count,
+##                  color = ~County,
+##                  mode = 'lines+markers')
+## 
+##   fig <- fig %>% layout(xaxis = x, yaxis = y)
+## 
+##   fig
+## 
+## })
+## 
 

@@ -2,7 +2,6 @@
 title: "Data analysis, the data.table way"
 author: "Bijan Seyednasrollah"
 date: "5/1/2020"
-runtime: shiny
 output: html_document
 ---
 
@@ -22,6 +21,14 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::purl('datatable.Rmd')
 ```
 
+## About This Tutorial
+<div style= "float:right;position: relative; top: 10px; height: 200px; width: 200px">
+![](rdatatable.png)
+</div>
+
+This document was created by [Bijan Seyednasrollah](http://bnasr.github.io/) and it is partially adopted from a course by [Matt Dowle](https://twitter.com/MattDowle) and [Arun Srinivasan](https://twitter.com/arun_sriniv) at [DataCamp](https://learn.datacamp.com/courses/data-manipulation-in-r-with-datatable). You can get more information about the course and other resources at the bottom of this page. 
+ 
+ If you follow the tutorial, please do not forget to complete the survey. Thank you for stopping by.
 
 ## Objectives
 
@@ -35,7 +42,7 @@ In this tutorial, you will learn:
 
 **_data.table_**'s are powerful data structures for storing tabular data in R. **_data.table_**'s may look similar to basic **_data.table_**'s, but they are much more powerful for not only storing data but also for performing on the fly data analyses and data queries **_data.table_**'s use high performance computing for fast and quick task accomplishments. 
 
-You can download the [**_R Code_**](datatable.R) of this tutorial.
+You can download the original [**_R Markdown_**](datatable.Rmd) and [**_R Code_**](datatable.R) of this tutorial.
 
 To work with **_data.table_**'s, first you need to install the **data.table** _R_ package.
 
@@ -413,8 +420,11 @@ library(shiny)
 ```
 
 
-Now, let's code it:
-```{r, echo=FALSE,eval=TRUE}
+Now, let's code it.
+
+*Note:* As this part of the tutorial requires a running shiny server, we have set the code chunk as `echo=TRUE, eval=FALSE` and therefor the interface do not appear on our static HTML page. You can still run the Shiny interface on your personal computer, if you set the code chunk as `echo=FALSE, eval=TRUE` and add a new line in the header: `runtime: shiny`. 
+
+```{r, echo=TRUE, eval=FALSE}
 
 # input state name
 selectInput(inputId = 'state',
