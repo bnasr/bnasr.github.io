@@ -28,7 +28,7 @@ knitr::purl('datatable.Rmd')
 
 This document was created by [Bijan Seyednasrollah](http://bnasr.github.io/) and it is partially adopted from a course by [Matt Dowle](https://twitter.com/MattDowle) and [Arun Srinivasan](https://twitter.com/arun_sriniv) at [DataCamp](https://learn.datacamp.com/courses/data-manipulation-in-r-with-datatable). You can get more information about the course and other resources at the bottom of this page. 
  
- If you follow the tutorial, please do not forget to complete the survey. Thank you for stopping by.
+ If you follow the tutorial, please do not forget to complete the survey at the bottom of this page. Thank you for stopping by.
 
 ## Objectives
 
