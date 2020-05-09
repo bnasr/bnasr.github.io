@@ -1,7 +1,7 @@
 ---
 title: "Data analysis, the data.table way"
 author: "Bijan Seyednasrollah"
-date: "5/1/2020"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
