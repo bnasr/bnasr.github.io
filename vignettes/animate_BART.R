@@ -115,7 +115,7 @@ gcc_file_tbl <- gcc_file_tbl[file.exists(midday_dest)]
 
 #number of image
 n <- nrow(gcc_file_tbl)
-n=10
+# n=10
 # make the animation using the saveVideo animation file
 saveVideo(interval = 0.3, # animation interval in seconds
           ani.width = 1298, # image width in pixels
