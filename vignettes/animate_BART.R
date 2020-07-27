@@ -42,7 +42,7 @@ gcc_ts[,midday_url:=sprintf('https://phenocam.sr.unh.edu/data/archive/%s/%04d/%0
 
 
 # organizing the data into a new data.table including the URL, date and GCC90 values
-gcc_file_tbl <- gcc_ts[year%in%(Years),.(midday_url, YYYYMMDD, gcc_90)] 
+gcc_file_tbl <- gcc_ts[year%in%(Years),.(midday_url, YYYYMMDD, gcc_90, rcc_90)] 
 
 # creating the destination filename to download each midday image
 gcc_file_tbl[,midday_dest:=paste0(site, '/', basename(midday_url))] 
@@ -104,9 +104,10 @@ gcc_file_tbl[,gcc:=gcc_90]
 
 
 
+gcc_file_tbl <- gcc_file_tbl[file.exists(midday_dest)]
+
 #number of image
 n <- nrow(gcc_file_tbl)
-
 
 # make the animation using the saveVideo animation file
 saveVideo(interval = 0.5, # animation interval in seconds
