@@ -107,9 +107,9 @@ show_midday <- function(i){
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$bcc[i], pch = 19, col = 'white')
 }
 
+# write.table(dir('NEON.D01.BART.DP1.00033/excludes/'), 'vignettes/BARTexclude.csv', row.names = F, col.names = F)
 
-
-
+gcc_file_tbl <-  gcc_file_tbl[!basename(midday_dest)%in%read.table('vignettes/BARTexclude.csv')[,1]]
 gcc_file_tbl <- gcc_file_tbl[file.exists(midday_dest)]
 
 #number of image
