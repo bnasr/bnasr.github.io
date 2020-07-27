@@ -31,7 +31,7 @@ dir.create(site, showWarnings = FALSE)
 gcc_ts <- get_pheno_ts(site, 
                        vegType = vegType, 
                        roiID = roiID, 
-                       type = '3day')
+                       type = '1day')
 
 #organizing columns
 gcc_ts[, month:=month(YYYYMMDD)] # extracting month from the date
@@ -86,20 +86,19 @@ show_midday <- function(i){
        type = 'l',
        lwd = 2,
        cex.axis =1.5,
-       col = '#51fddc', 
-       col.axis = '#51fddc',
+       col = 'green', 
+       col.axis = 'white',
        xlim = range(gcc_file_tbl$YYYYMMDD),
-       ylim = c(0,1) #range(gcc_file_tbl$gcc, na.rm = TRUE)
+       ylim = range(c(gcc_file_tbl$gcc, gcc_file_tbl$rcc, gcc_file_tbl$bcc), na.rm = TRUE)
   )
   lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = 'red')
   lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = 'blue')
        
-  mtext('Canopy Color', side = 2, line = 0, col = '#51fddc', cex = 2, font = 2)
+  mtext('Canopy Color', side = 2, line = 0, col = 'white', cex = 2, font = 2)
   
-  points(gcc_file_tbl$YYYYMMDD[i], 
-         gcc_file_tbl$gcc[i], 
-         pch = 19,
-         col = '#ca5f63')
+  points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$gcc[i], pch = 19, col = 'white')
+  points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$rcc[i], pch = 19, col = 'white')
+  points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$bcc[i], pch = 19, col = 'white')
 }
 
 # dummy
