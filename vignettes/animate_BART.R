@@ -90,17 +90,17 @@ show_midday <- function(i){
        gcc_file_tbl$gcc[1:i], 
        bty ='n', 
        type = 'l',
-       lwd = 2,
+       lwd = 3,
        cex.axis =1.5,
        col = 'green', 
        col.axis = 'white',
        xlim = range(gcc_file_tbl$YYYYMMDD),
        ylim = range(c(gcc_file_tbl$gcc, gcc_file_tbl$rcc, gcc_file_tbl$bcc), na.rm = TRUE)
   )
-  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = 'red')
-  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = 'blue')
+  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = '#FF1D17', lwd = 3)
+  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = '#4F80DF', lwd = 3)
        
-  mtext('Canopy Color', side = 2, line = 0, col = 'white', cex = 2, font = 2)
+  mtext('Canopy Color', side = 2, line = -1, col = 'white', cex = 1.5, font = 1)
   
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$gcc[i], pch = 19, col = 'white')
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$rcc[i], pch = 19, col = 'white')
