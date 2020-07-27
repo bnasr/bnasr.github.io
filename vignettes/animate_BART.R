@@ -91,8 +91,8 @@ show_midday <- function(i){
        xlim = range(gcc_file_tbl$YYYYMMDD),
        ylim = c(0,1) #range(gcc_file_tbl$gcc, na.rm = TRUE)
   )
-  plot(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = 'red')
-  plot(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = 'blue')
+  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = 'red')
+  lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = 'blue')
        
   mtext('Canopy Color', side = 2, line = 0, col = '#51fddc', cex = 2, font = 2)
   
