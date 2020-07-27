@@ -28,21 +28,27 @@ dir.create(site, showWarnings = FALSE)
 ## ----ts, eval=TRUE-------------------------------------------------------
 
 #getting the timeseries from the phenocam server
-gcc_ts <- get_pheno_ts(site, 
-                       vegType = vegType, 
-                       roiID = roiID, 
-                       type = '1day')
+gcc_ts <- get_pheno_ts(site,
+                       vegType = vegType,
+                       roiID = roiID,
+                       type = '3day')
 
+gcc_ts_list <- phenocamr::download_phenocam(site = site, veg_type = vegType, frequency = 1, roi_id = roiID, smooth = T, internal = T)
+
+gcc_ts2 <- setDT(gcc_ts_list$data)
 #organizing columns
+gcc_ts[, YYYYMMDD:=as.Date(date)] # convert to the right format
 gcc_ts[, month:=month(YYYYMMDD)] # extracting month from the date
-gcc_ts[, YYYYMMDD:=as.Date(YYYYMMDD)] # convert to the right format
 gcc_ts[,midday_url:=sprintf('https://phenocam.sr.unh.edu/data/archive/%s/%04d/%02d/%s', 
                             site, year, month, midday_filename)] #making the URL of midday images
 
-
+gcc_ts <- merge(gcc_ts, gcc_ts2[, .(date, smooth_gcc_90, smooth_rcc_90)], by = 'date')
 
 # organizing the data into a new data.table including the URL, date and GCC90 values
-gcc_file_tbl <- gcc_ts[year%in%(Years),.(midday_url, YYYYMMDD, gcc_90, rcc_90)] 
+gcc_file_tbl <- gcc_ts[year%in%(Years),.(midday_url, YYYYMMDD, 
+                                         gcc = smooth_gcc_90, 
+                                         rcc = smooth_rcc_90,
+                                         bcc = 1 - smooth_gcc_90 - smooth_rcc_90)] 
 
 # creating the destination filename to download each midday image
 gcc_file_tbl[,midday_dest:=paste0(site, '/', basename(midday_url))] 
@@ -101,10 +107,6 @@ show_midday <- function(i){
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$bcc[i], pch = 19, col = 'white')
 }
 
-# dummy
-gcc_file_tbl[,gcc:=gcc_90]
-gcc_file_tbl[,rcc:=rcc_90]
-gcc_file_tbl[,bcc:=1 - gcc - rcc]
 
 
 
