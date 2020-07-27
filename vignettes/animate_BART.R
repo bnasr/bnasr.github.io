@@ -122,6 +122,7 @@ saveVideo(interval = 0.3, # animation interval in seconds
           ani.height = 1298,# image height in pixels
           ani.res = 75, # resolution, not important here
           video.name = paste0(site, '.mp4'),
+          other.opts = '-filter_complex "gltransition=duration=4:offset=1.5" ',
           
           for(i in seq(1, n, by = 1)){
             cat(i, '\n')
