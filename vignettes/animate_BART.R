@@ -115,14 +115,14 @@ gcc_file_tbl <- gcc_file_tbl[file.exists(midday_dest)]
 
 #number of image
 n <- nrow(gcc_file_tbl)
-# n=3
+n=10
 # make the animation using the saveVideo animation file
 saveVideo(interval = 0.3, # animation interval in seconds
           ani.width = 1298, # image width in pixels
           ani.height = 1298,# image height in pixels
           ani.res = 75, # resolution, not important here
           video.name = paste0(site, '.mp4'),
-          other.opts = paste0('-vf fade=in:1:', n-1),
+          other.opts = paste0('"fade=in:1:', n-1, '"'),
           
           for(i in seq(1, n, by = 1)){
             cat(i, '\n')
