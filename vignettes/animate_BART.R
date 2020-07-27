@@ -122,8 +122,7 @@ saveVideo(interval = 0.3, # animation interval in seconds
           ani.height = 1298,# image height in pixels
           ani.res = 75, # resolution, not important here
           video.name = paste0(site, '.mp4'),
-          other.opts = paste0('"fade=in:1:', n-1, '"'),
-          
+          # other.opts = paste0('"fade=in:1:', n-1, '"'),
           for(i in seq(1, n, by = 1)){
             cat(i, '\n')
             show_midday(i)
