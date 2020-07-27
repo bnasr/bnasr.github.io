@@ -118,8 +118,8 @@ n <- nrow(gcc_file_tbl)
 
 # make the animation using the saveVideo animation file
 saveVideo(interval = 0.2, # animation interval in seconds
-          ani.width = 900, # image width in pixels
-          ani.height = 900,# image height in pixels
+          ani.width = 1298, # image width in pixels
+          ani.height = 1298,# image height in pixels
           ani.res = 75, # resolution, not important here
           video.name = paste0(site, '.mp4'),
           
