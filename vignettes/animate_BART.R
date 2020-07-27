@@ -85,7 +85,7 @@ show_midday <- function(i){
   rasterImage(img, 0, 0, 1, 1)
   # mtext('Greenup Seasonality at Duke Forest', col = '#51fddc')
   
-  par(fig = c(0,1, 0, 0.3), new = T, mar=c(2,2,0,0))  
+  par(fig = c(0,1, 0, 0.3), new = T, mar=c(2,1,0,0))  
   plot(gcc_file_tbl$YYYYMMDD[1:i], 
        gcc_file_tbl$gcc[1:i], 
        bty ='n', 
@@ -95,12 +95,13 @@ show_midday <- function(i){
        col = 'green', 
        col.axis = 'white',
        xlim = range(gcc_file_tbl$YYYYMMDD),
+       # yaxt = 'n',
        ylim = range(c(gcc_file_tbl$gcc, gcc_file_tbl$rcc, gcc_file_tbl$bcc), na.rm = TRUE)
   )
   lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = '#FF1D17', lwd = 3)
   lines(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = '#4F80DF', lwd = 3)
        
-  mtext('Canopy Color', side = 2, line = -1, col = 'white', cex = 1.5, font = 1)
+  mtext('Canopy Color', side = 2, line = 0, col = 'white', cex = 1.5, font = 1)
   
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$gcc[i], pch = 19, col = 'white')
   points(gcc_file_tbl$YYYYMMDD[i], gcc_file_tbl$rcc[i], pch = 19, col = 'white')
@@ -116,8 +117,8 @@ gcc_file_tbl <- gcc_file_tbl[file.exists(midday_dest)]
 n <- nrow(gcc_file_tbl)
 
 # make the animation using the saveVideo animation file
-saveVideo(interval = 0.1, # animation interval in seconds
-          ani.width = 1000, # image width in pixels
+saveVideo(interval = 0.2, # animation interval in seconds
+          ani.width = 900, # image width in pixels
           ani.height = 900,# image height in pixels
           ani.res = 75, # resolution, not important here
           video.name = paste0(site, '.mp4'),
