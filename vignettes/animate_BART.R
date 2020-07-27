@@ -77,7 +77,7 @@ show_midday <- function(i){
   
   img <- readJPEG(gcc_file_tbl$midday_dest[i])
   rasterImage(img, 0, 0, 1, 1)
-  mtext('Greenup Seasonality at Duke Forest', col = '#51fddc')
+  # mtext('Greenup Seasonality at Duke Forest', col = '#51fddc')
   
   par(fig = c(0,1, 0, 0.3), new = T, mar=c(2,2,0,0))  
   plot(gcc_file_tbl$YYYYMMDD[1:i], 
@@ -89,9 +89,12 @@ show_midday <- function(i){
        col = '#51fddc', 
        col.axis = '#51fddc',
        xlim = range(gcc_file_tbl$YYYYMMDD),
-       ylim = range(gcc_file_tbl$gcc, na.rm = TRUE)
+       ylim = c(0,1) #range(gcc_file_tbl$gcc, na.rm = TRUE)
   )
-  mtext('Canopy Greenness', side = 2, line = 0, col = '#51fddc', cex = 2, font = 2)
+  plot(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$rcc[1:i], col = 'red')
+  plot(gcc_file_tbl$YYYYMMDD[1:i], gcc_file_tbl$bcc[1:i], col = 'blue')
+       
+  mtext('Canopy Color', side = 2, line = 0, col = '#51fddc', cex = 2, font = 2)
   
   points(gcc_file_tbl$YYYYMMDD[i], 
          gcc_file_tbl$gcc[i], 
@@ -101,6 +104,8 @@ show_midday <- function(i){
 
 # dummy
 gcc_file_tbl[,gcc:=gcc_90]
+gcc_file_tbl[,rcc:=rcc_90]
+gcc_file_tbl[,bcc:=1 - gcc - rcc]
 
 
 
